@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import MapComponent from './MapComponent';
 
 export default function Dashboard() {
     const [user, setUser] = useState({});
@@ -17,7 +18,10 @@ export default function Dashboard() {
         address: '',
         status: 'Negeri',
         level: 'SD',
-        accreditation: 'belum Terakreditasi',
+        latitude: '',
+        longitude: '',
+        photo: '',
+        accreditation: 'Belum Terakreditasi',
         student_2025: 0
     }); 
 
@@ -106,12 +110,13 @@ export default function Dashboard() {
             setEditSchoolId(null);
             setNewSchool({
                 npsn: '', name: '', level: 'SD', status: 'Negeri',
-                district: '', address: '', accreditation: 'belum Terakreditasi', student_2025: 0
+                district: '', address: '', latitude: '', longitude: '', photo: '', 
+                accreditation: 'Belum Terakreditasi', student_2025: 0
             });
             fetchData();
         } catch (error) {
             console.error(error);
-            alert('Gagal menyimpan! Cek apakah NPSN sudah ada atau isian belum lengkap.')
+            alert('Gagal menyimpan! Cek apakah NPSN sudah benar atau isian belum lengkap.')
         } finally {
             setIsSubmitting(false);
         }
@@ -126,6 +131,9 @@ export default function Dashboard() {
             address: school.address,
             status: school.status,
             level: school.level,
+            latitude: school.latitude || '',
+            longitude: school.longitude || '',
+            photo: school.photo || '',
             accreditation: school.accreditation,
             student_2025: school.student_2025
         });
@@ -364,7 +372,7 @@ export default function Dashboard() {
                                         <option value="A">A</option>
                                         <option value="B">B</option>    
                                         <option value="C">C</option>
-                                        <option value="belum Terakreditasi">Belum Terakreditasi</option>
+                                        <option value="Belum Terakreditasi">Belum Terakreditasi</option>
                                     </select>
                                 </div>
                                 <div className='col-span-1 md:col-span-2'>
@@ -375,6 +383,30 @@ export default function Dashboard() {
                                     <label className='block text-sm font-medium text-gray-700 mb-1'>Jumlah Siswa (2025)</label>
                                     <input type="number" name="student_2025" value={newSchool.student_2025} onChange={handleInputChange} required className='w-full border p-2 rounded focus:ring-2 focus:ring-blue-500' placeholder='Contoh: 100'/>
                                 </div>
+                                <div className='grid grid-cols-2 gap-4'>
+                                    <div>
+                                        <label className='block text-sm font-medium text-gray-700 mb-1'>Latitude</label>
+                                        <input 
+                                            type="text" 
+                                            name="latitude" 
+                                            value={newSchool.latitude || ''}
+                                            onChange={handleInputChange}
+                                            className='w-full border p-2 rounded focus:ring-2 focus:ring-blue-500'
+                                            placeholder='Contoh: -6.7465'
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className='block text-sm font-medium text-gray-700 mb-1'>Longitude</label>
+                                        <input 
+                                            type="text" 
+                                            name="longitude" 
+                                            value={newSchool.longitude || ''}
+                                            onChange={handleInputChange}
+                                            className='w-full border p-2 rounded focus:ring-2 focus:ring-blue-500'
+                                            placeholder='Contoh: 110.8465'
+                                        />
+                                    </div>
+                                </div>
                                 <div className='col-span-1 md:col-span-2 flex justify-end gap-3 mt-4 pt-4 boder-t'>
                                     <button type="button" onClick={() => setShowModal(false)} className='bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-6 rounded shadow'>Batal</button>
                                     <button type="submit" className='bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded shadow'>Simpan</button>
@@ -383,6 +415,8 @@ export default function Dashboard() {
                         </div>
                     </div>
                 )}
+
+                <MapComponent schools={schools} className="mt-6"/>
             </main>
         </div>
     );
