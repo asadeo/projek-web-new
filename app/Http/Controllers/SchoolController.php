@@ -67,6 +67,11 @@ class SchoolController extends Controller
             'status' => 'required|in:Negeri,Swasta',
             'address' => 'required|string|max:500',
             'district' => 'required|string|max:255',
+            'photo' => 'nullable|string|max:255',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'student_2023' => 'nullable|integer|min:0',
+            'student_2024' => 'nullable|integer|min:0',
             'student_2025' => 'nullable|integer|min:0',
             'accreditation' => 'nullable|in:A,B,C,Belum Terakreditasi',
         ]);

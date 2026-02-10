@@ -24,13 +24,15 @@ export default function MapComponent({ schools }){
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {schools.map((school) => (
+            {schools.map((school) => {
+                if (school.latitude && school.longitude) {
+                return (
                 <Marker key={school.id} position={[school.latitude, school.longitude]}>
                     <Popup>
                         <div className='text-center'>
                             <b className='text-sm'>{school.name}</b><br/>
                             <span className='text-xs text-gray-600'>{school.level} - {school.status}</span><br/>
-                            <a href={'https://www.google.com/maps/dir/?api=1&destination=${school.latitude},${school.longitude}'} 
+                            <a href={`https://www.google.com/maps/?q=${school.latitude},${school.longitude}`} 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 className='text-blue-600 underline text-xs mt-1 block'>
@@ -39,7 +41,10 @@ export default function MapComponent({ schools }){
                         </div>
                     </Popup>
                 </Marker>
-            ))}
+                );
+            }
+                return null;
+            })}
         </MapContainer>
     )
 }
