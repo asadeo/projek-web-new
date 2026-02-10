@@ -30,6 +30,13 @@ export default function MapComponent({ schools }){
                 <Marker key={school.id} position={[school.latitude, school.longitude]}>
                     <Popup>
                         <div className='text-center'>
+                            {school.photo && (
+                                <img 
+                                    src={`/storage/${school.photo}`}
+                                    alt={school.name}
+                                    className='w-full h-24 object-cover rounded mb-2'
+                                />
+                            )}
                             <b className='text-sm'>{school.name}</b><br/>
                             <span className='text-xs text-gray-600'>{school.level} - {school.status}</span><br/>
                             <a href={`https://www.google.com/maps/?q=${school.latitude},${school.longitude}`} 

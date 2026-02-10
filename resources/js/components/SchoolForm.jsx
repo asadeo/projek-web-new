@@ -121,20 +121,42 @@ export default function SchoolForm(){
         try {
             const token = localStorage.getItem('ACCESS_TOKEN');
 
+            const formData = new FormData();
+            formData.append('npsn', newSchool.npsn);
+            formData.append('name', newSchool.name);
+            formData.append('level', newSchool.level);
+            formData.append('status', newSchool.status);
+            formData.append('address', newSchool.address);
+            formData.append('district', newSchool.district);
+            formData.append('student_2025', newSchool.student_2025);
+            formData.append('accreditation', newSchool.accreditation);
+            formData.append('latitude', newSchool.latitude);
+            formData.append('longitude', newSchool.longitude);
+            if (newSchool.photo instanceof File) {
+                formData.append('photo', newSchool.photo);
+            }
+
             if (id){
-                await axios.put(`/api/schools/${id}`, newSchool, {
-                    headers: { Authorization: `Bearer ${token}` }
+                formData.append('_method', 'PUT');
+                await axios.post(`/api/schools/${id}`, formData, {
+                    headers: { 
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
                 });
                 alert('Berhasil memperbarui data sekolah!');
             } else {
-                await axios.post('/api/schools', newSchool, {
-                    headers: { Authorization: `Bearer ${token}` }
+                await axios.post('/api/schools', formData, {
+                    headers: { 
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
                 });
                 alert('Berhasil menambahkan sekolah!');
             }
 
             navigate('/dashboard');
-            
+
         } catch (error) {
             console.error("Error Detail:", error.response || error);
             if (error.response && error.response.data && error.response.data.message) {
@@ -160,6 +182,28 @@ export default function SchoolForm(){
                 </div>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="col-span-1 md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Foto Sekolah 
+                        </label>
+                        {newSchool.photo && typeof newSchool.photo === 'string' && (
+                            <div className="mb-2">
+                                <img src={`/storage/${newSchool.photo}`} alt="Preview" className="h-20 rounded shadow" />
+                            </div>
+                        )}
+                        <input 
+                            type="file" 
+                            name="photo" 
+                            onChange={(e) => {
+                                setNewSchool({
+                                    ...newSchool,
+                                    photo: e.target.files[0],
+                                })
+                            }} 
+                            className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500" 
+                            accept="image/*"
+                        />
+                    </div>
                     <div>
                         <label className='block text-sm font-medium text-gray-700 mb-1'>NPSN</label>
                         <input type="text" name="npsn" value={newSchool.npsn} onChange={handleInputChange} required className='w-full border p-2 rounded focus:ring-2 focus:ring-blue-500' placeholder='Contoh: 20338911'/>

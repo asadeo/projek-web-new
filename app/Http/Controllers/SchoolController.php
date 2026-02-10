@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\School;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SchoolController extends Controller
 {
@@ -33,7 +34,7 @@ class SchoolController extends Controller
             'status' => 'required|in:Negeri,Swasta',
             'address' => 'required|string|max:500',
             'district' => 'required|string|max:255',
-            'photo' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'student_2023' => 'nullable|integer|min:0',
@@ -42,7 +43,12 @@ class SchoolController extends Controller
             'accreditation' => 'nullable|in:A,B,C,Belum Terakreditasi',
         ]);
 
-        $schools = School::create($request->all());
+        if ($request->hasFile('photo')){
+            $path = $request->file('photo')->store('public/school_photos');
+            $validated['photo'] = $path;
+        }
+
+        $schools = School::create($validated);
 
         return response()->json([
             'status' => 'success',
@@ -67,7 +73,7 @@ class SchoolController extends Controller
             'status' => 'required|in:Negeri,Swasta',
             'address' => 'required|string|max:500',
             'district' => 'required|string|max:255',
-            'photo' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'student_2023' => 'nullable|integer|min:0',
@@ -76,7 +82,15 @@ class SchoolController extends Controller
             'accreditation' => 'nullable|in:A,B,C,Belum Terakreditasi',
         ]);
 
-        $schools->update($request->all());
+        if ($request->hasFile('photo')){
+            if ($schools->photo && Storage::disk('public')->exists($schools->photo)) {
+                Storage::disk('public')->delete($schools->photo);
+            }
+            $path = $request->file('photo')->store('schools', 'public');
+            $validated['photo'] = $path;
+        }
+
+        $schools->update($validated);
 
         return response()->json([
             'status' => 'success',
