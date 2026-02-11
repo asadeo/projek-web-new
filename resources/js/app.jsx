@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import SchoolForm from './components/SchoolForm';
+import LandingPage from './components/LandingPage';
 
 function App() {
     const token = localStorage.getItem('ACCESS_TOKEN');
@@ -12,7 +13,7 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<LandingPage/>} />
                 
                 <Route path="/login" element={<Login />} />
                 <Route 
