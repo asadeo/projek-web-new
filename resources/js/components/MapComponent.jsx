@@ -39,7 +39,7 @@ export default function MapComponent({ schools }){
                             )}
                             <b className='text-sm'>{school.name}</b><br/>
                             <span className='text-xs text-gray-600'>{school.level} - {school.status}</span><br/>
-                            <a href={`https://www.google.com/maps/?q=${school.latitude},${school.longitude}`} 
+                            <a href={`https://www.google.com/maps/dir/?api=1&destination=${school.latitude},${school.longitude}`} 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 className='text-blue-600 underline text-xs mt-1 block'>

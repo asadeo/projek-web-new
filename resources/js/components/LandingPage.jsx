@@ -6,15 +6,46 @@ import MapComponent from './MapComponent';
 export default function LandingPage() {
     const [schools, setSchools] = useState([]);
     const navigate = useNavigate();
+    const [filteredSchools, setFilteredSchools] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterLevel, setFilterLevel] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
 
     useEffect(() => {
-        axios.get('api/public/schools')
+        axios.get('/api/public/schools')
             .then(res => {
-                setSchools(res.data.schools || res.data || [])
+                const data = res.data.schools || res.data || [];
+                setSchools(data)
+                setFilteredSchools(data);
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error("Gagal memuat data:", err));
     }, []);
 
+    useEffect(() => {
+        let result = schools;
+
+        if (searchTerm) {
+            result = result.filter(school =>
+                school.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        if (filterLevel) {
+            result = result.filter(school => school.level === filterLevel);
+        }
+
+        if (filterStatus) {
+            result = result.filter(school => school.status === filterStatus);
+        }
+
+        setFilteredSchools(result);
+    }, [searchTerm, filterLevel, filterStatus, schools]);
+
+    const resetFilter = () => {
+        setSearchTerm('');
+        setFilterLevel('');
+        setFilterStatus('');
+    }
 
     return (
         <div className='min-h-screen bg-gray-50 flex flex-col'>
@@ -297,9 +328,76 @@ export default function LandingPage() {
                         <div className="w-24 h-1 bg-[#FFC107] mx-auto mb-4 rounded-full"></div>
                     </div>
 
+                    <div className='max-w-4xl mx-auto px-4 mb-8'>
+                        <div className='bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4'>
+                            <div className='flex-grow'>
+                                <label className='block text-xs font-bold text-gray-500 mb-1'>Cari Sekolah</label>
+                                <div className='relative'>
+                                    <span className='absolute left-3 top-2.5 text-gray-400'>
+                                        <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/>
+                                        </svg>
+                                    </span>
+                                    <input 
+                                        type='text'
+                                        placeholder='Nama sekolah...'
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className='w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFC107] focus:border-transparent text-gray-700'
+                                    />
+                                </div>
+                            </div>
+                            <div className='w-full md:w-48'>
+                                <label className='block text-xs font-bold text-gray-500 mb-1 uppercase'>Jenjang</label>
+                                <select
+                                    value={filterLevel}
+                                    onChange={(e) => setFilterLevel(e.target.value)}
+                                    className='w-full px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFC107] focus:border-transparent text-gray-700 bg-white' 
+                                >
+                                    <option value="">Semua Jenjang</option>
+                                    <option value="">Semua Jenjang</option>
+                                    <option value="SD">SD</option>
+                                    <option value="SMP">SMP</option>
+                                </select>
+                            </div>
+                            <div className='w-full md:w-48'>
+                                <label className='block text-xs font-bold text-gray-500 mb-1 uppercase'>Status</label>
+                                <select
+                                    value={filterStatus}
+                                    onChange={(e) => setFilterStatus(e.target.value)}
+                                    className='w-full px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFC107] focus:border-transparent text-gray-700 bg-white' 
+                                >
+                                    <option value="">Semua Status</option>
+                                    <option value="Negeri">Negeri</option>
+                                    <option value="Swasta">Swasta</option>
+                                </select>
+                            </div>
+
+                            <div className='flex items-end'>
+                                <button
+                                    onClick={resetFilter}
+                                    className='px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-md font-medium transtition flex items-center gap-2'
+                                >
+                                    <svg xmlns='http://www.w' className='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                                        <path strokeLinecap='' strokeLinejoin='' strokeWidth={2} d=''/>
+                                    </svg>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        {(searchTerm || filterLevel || filterStatus) && (
+                            <div className=''>
+                                <span className=''>
+                                    Ditemukan: {filteredSchools.length} Sekolah
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Komponen Peta */}
-                    <div className="w-full h-[500px] relative z-0">
-                        <MapComponent schools={schools} />
+                    <div className="w-full h-[500px] relative z-0 p-4 mb-10">
+                        <MapComponent schools={filteredSchools} />
                     </div>
                 </div>
             </main>
@@ -365,17 +463,17 @@ export default function LandingPage() {
                     </div>
 
                     <div className='col-span-1'>
-                            <h4 className='text-[#FFC107] font-bold uppercase text-sm tracking-wider mb-6 border-b border-gray-700 pb-2 inline-block'>Lokasi Kantor</h4>
-                            <div className='w-full h-40 rounded-lg overflow-hidden border border-gray-600 shadow-lg'>
-                                <iframe
-                                    src='https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Dinas%20Pendidikan%20dan%20Kebudayaan%20Kabupaten%20Pati+(Dinas%20Pendidikan%20Pati)&t=&z=15&ie=UTF8&iwloc=B&output=embed'
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0 }}
-                                    allowFullScreen=""
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrad">
-                                </iframe>
+                        <h4 className='text-[#FFC107] font-bold uppercase text-sm tracking-wider mb-6 border-b border-gray-700 pb-2 inline-block'>Lokasi Kantor</h4>
+                        <div className='w-full h-40 rounded-lg overflow-hidden border border-gray-600 shadow-lg'>
+                            <iframe
+                                src='https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Dinas%20Pendidikan%20dan%20Kebudayaan%20Kabupaten%20Pati+(Dinas%20Pendidikan%20Pati)&t=&z=15&ie=UTF8&iwloc=B&output=embed'
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen=""
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrad">
+                            </iframe>
                             <a
                                 href="https://maps.app.goo.gl/bFzg6UrhnWDuCfUU6"
                                 target="_blank"
@@ -383,14 +481,14 @@ export default function LandingPage() {
                             >
                                 ↗ Buka di Google Maps
                             </a>
-                    </div>
-                    {/* Copyright Bar */}
-                    <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                        <p>&copy; 2026 Dinas Pendidikan dan Kebudayaan Kabupaten Pati. Hak Cipta Dilindungi.</p>
+                        </div>
+                        {/* Copyright Bar */}
+                        <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
+                            <p>&copy; 2026 Dinas Pendidikan dan Kebudayaan Kabupaten Pati. Hak Cipta Dilindungi.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </footer>
-    </div>
-)
+            </footer>
+        </div>
+    )
 }
