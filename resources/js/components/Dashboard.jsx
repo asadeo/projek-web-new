@@ -9,6 +9,9 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    const [ searchTerm, setSearchTerm ] = useState('');
+    const [filterLevel, setFilterLevel] = useState('');
+
     const fetchData = async () => {
             try {
                 const token = localStorage.getItem('ACCESS_TOKEN');
@@ -74,6 +77,44 @@ export default function Dashboard() {
             }
         }
     };  
+
+    const handleExportCSV = () => {
+        if (filteredSchools.length == 0){
+            alert("Tidak ada data untuk diexport!")
+            return;
+        }
+        let csvContent = "NPSN,Nama Sekolah,Jenjang,Status,Kecamatan,Akreditasi,Jumlah Siswa(2025)\n";
+
+        filteredSchools.forEach(school => {
+            const row = [
+                school.npsn,
+                `"${school.name}"`,
+                school.level,
+                school.status,
+                `"${school.district}"`,
+                school.accreditation || "-",
+                school.student_2025 || 0
+            ].join(",");
+
+            csvContent += row + "\n";
+        })
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;'});
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "Data_Sekolah_Kabupaten_Pati.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+    }
+
+    const filteredSchools = schools.filter(school => {
+        const matchSearch = school.name.toLowerCase().includes(searchTerm.toLowerCase()) || school.npsn.includes(searchTerm);
+        const matchLevel = filterLevel ? school.level === filterLevel : true;
+        return matchSearch && matchLevel;
+    })
 
     return (
         <div className="flex min-h-screen bg-gray-100">
@@ -175,15 +216,43 @@ export default function Dashboard() {
                             <h2 className="text-3xl font-bold text-gray-800">Data Sekolah</h2>
                             <p className="text-gray-500">Daftar sekolah di Kabupaten Pati</p>
                         </div>
-                    <div className='flex items-center gap-4'>
-                        <button onClick={() => navigate('/schools/create')}
-                        className='bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded shadow flex items-center gap-2'>
-                            + Tambah Sekolah
-                        </button>
-                        <div className="bg-white px-4 py-2 rounded shadow text-sm font-semibold text-blue-600">
-                            Total: {schools.length} Sekolah
+                        <div className='flex items-centers gap-4'>
+                            <button onClick={() => navigate('/schools/create')}
+                            className='bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded shadow flex items-center gap-2'>
+                                + Tambah Sekolah
+                            </button>
+                            <div className="bg-white px-4 py-2 rounded shadow text-sm font-semibold text-blue-600">
+                                Total: {filteredSchools.length} Sekolah
+                            </div>
+                            <button 
+                                onClick={handleExportCSV}
+                                className='bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg shadow-md font-semibold flex items-center gap-2 transition transform hover:-translate-y-0.5'
+                            >
+                                <span>Unduh CSV</span>
+                            </button>
                         </div>
                     </div>
+                    <div className='bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 mb-6'>
+                        <div className='flex-1'>
+                            <input
+                                type='text'
+                                placeholder='Cari NPSN atau Nama Sekolah...'
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none'
+                            />
+                        </div>
+                        <div className='w-full md:w-48'>
+                            <select
+                                value={filterLevel}
+                                onChange={(e) => setFilterLevel(e.target.value)}
+                                className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none'
+                            >
+                                <option value="">Semua Jenjang</option>
+                                <option value="SD">SD</option>
+                                <option value="SMP">SMP</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -206,11 +275,16 @@ export default function Dashboard() {
                                 <tr>
                                     <td colSpan="6" className="p-8 text-center text-gray-400">Sedang memuat data...</td>
                                 </tr>
-                            ) : schools.length > 0 ? (
-                                schools.map((school) => (
+                            ) : filteredSchools.length > 0 ? (
+                                filteredSchools.map((school) => (
                                     <tr key={school.id} className="hover:bg-blue-50 transition border-b last:border-0">
                                         <td className="p-4 font-mono text-slate-500">{school.npsn}</td>
-                                        <td className="p-4 font-bold text-slate-800">{school.name}</td>
+                                        <td className='p-4 font-bold text-slate-800 flex items-center gap-3'>{school.photo ? (
+                                            <img src={`/storage/${school.photo}`} className='w-10 h-10 rounded-md object-cover border' alt='foto'/>):(
+                                            <div className='w-10 h-10 rounded-md bg-gray-100 border flex items-center justify-center text-gray-400 text-lg'>🏫</div>
+                                            )}
+                                            <span>{school.name}</span>
+                                        </td>
                                         <td className="p-4">{school.district}</td>
                                         <td className="p-4 text-center">
                                             <span className={`px-2 py-1 rounded text-xs font-bold ${school.level === 'SD' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
@@ -244,7 +318,7 @@ export default function Dashboard() {
                     </table>
                 </div>
 
-                <MapComponent schools={schools} />
+                <MapComponent schools={filteredSchools} />
             </main>
         </div>
     );

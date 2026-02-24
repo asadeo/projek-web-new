@@ -14,7 +14,7 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-export default function MapComponent({ schools }){
+export default function MapComponent({ schools, onSelectSchool }){
     const position = [-6.7462, 111.0278];
 
     return (
@@ -45,6 +45,13 @@ export default function MapComponent({ schools }){
                                 className='text-blue-600 underline text-xs mt-1 block'>
                                 Rute ke lokasi
                             </a>
+
+                            <button
+                                onClick={() => onSelectSchool(school)}
+                                className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded mt-2 w-full hover:bg-blue-200'
+                            >
+                                Lihat Detail Lengkap
+                            </button>
                         </div>
                     </Popup>
                 </Marker>

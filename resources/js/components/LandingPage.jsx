@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import MapComponent from './MapComponent';
+import SchoolModal from './SchoolModal';
 
 export default function LandingPage() {
     const [schools, setSchools] = useState([]);
+    const [selectedSchool, setSelectedSchool] = useState(null);
     const navigate = useNavigate();
     const [filteredSchools, setFilteredSchools] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -46,6 +48,10 @@ export default function LandingPage() {
         setFilterLevel('');
         setFilterStatus('');
     }
+
+    const totalSiswa = filteredSchools.reduce((total, school) => {
+        return total + (Number(school.student_2025) || 0);   
+    }, 0);
 
     return (
         <div className='min-h-screen bg-gray-50 flex flex-col'>
@@ -125,7 +131,7 @@ export default function LandingPage() {
                             </svg>
                         </div>
                         <span className="font-bold text-gray-800 text-lg">Siswa</span>
-                        <span className="text-[#F59E0B] font-bold text-xl">900</span>
+                        <span className="text-[#F59E0B] font-bold text-xl">{totalSiswa.toLocaleString('id-ID')}</span>
                     </div>
 
                     {/* Card 3: Guru */}
@@ -397,10 +403,20 @@ export default function LandingPage() {
 
                     {/* Komponen Peta */}
                     <div className="w-full h-[500px] relative z-0 p-4 mb-10">
-                        <MapComponent schools={filteredSchools} />
+                        <MapComponent 
+                            schools={filteredSchools} 
+                            onSelectSchool={(schools) => setSelectedSchool(schools)}    
+                        />
                     </div>
                 </div>
             </main>
+
+            {selectedSchool && (
+                <SchoolModal
+                    school={selectedSchool}
+                    onClose={() => setSelectedSchool(null)}
+                />
+            )}
 
             {/* Footer */}
             <footer className="bg-[#0B2235] text-white pt-16 pb-8 border-t-4 border-[#FFC107]">
