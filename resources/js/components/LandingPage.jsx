@@ -55,7 +55,7 @@ export default function LandingPage() {
 
     return (
         <div className='min-h-screen bg-gray-50 flex flex-col'>
-            <nav className="bg-gradient-to-b from-[#20639B] from-50% to-[#0B2235] to-100% shadow-md z-10 relative">
+            <nav className="bg-linear-to-b from-[#20639B] from-50% to-[#0B2235] to-100% shadow-md z-10 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
                     <div className="flex justify-between h-20 items-center">
 
@@ -80,29 +80,20 @@ export default function LandingPage() {
                             <a href='#' className='block px-2 py-2.5 rounded-lg text-white font-medium hover:bg-[#FFC107] transition duration-300'>Berita</a>
                             <a href='#' className='block px-2 py-2.5 rounded-lg text-white font-medium hover:bg-[#FFC107] transition duration-300'>Kontak</a>
                         </div>
-
-                        {/* Tombol Login */}
-                        <div className="flex items-center">
-                            <button
-                                onClick={() => navigate('/login')}
-                                className="bg-[#FFC107] hover:bg-[#ffcd38] text-blue-900 px-6 py-2 rounded-full font-bold text-sm transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                            >
-                                Login Petugas
-                            </button>
-                        </div>
                     </div>
                 </div>
             </nav>
 
             {/* Hero Section */}
-            <div className='relative bg-[#1E5F99] text-white pt-20 pb-32 px-4 text-center overflow-visible'>
+            <div className='relative pt-20 pb-32 px-4 text-center overflow-visible'>
+                <div className="absolute inset-0 z-0" style={{ backgroundImage: "url('/assets/images/Image_Banner.jpeg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", opacity: "0.5"}} ></div>
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <div className="relative z-10 max-w-4xl mx-auto">
-                    <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight leading-tight">
+                    <h1 className="text-white text-3xl md:text-5xl font-bold mb-4 tracking-tight leading-tight">
                         Selamat Datang<br />
                         Di Disdikbud Kab Pati
                     </h1>
-                    <p className="text-white/80 max-w-2xl mx-auto text-sm md:text-base px-4">
+                    <p className="text-white max-w-2xl mx-auto text-sm md:text-base px-4">
                         Dinas Pendidikan dan Kebudayaan (Disdikbud) Kabupaten Pati adalah organisasi perangkat daerah yang
                         bertanggung jawab atas Sekolah dan Guru di Kabupaten Pati, Jawa Tengah.
                     </p>

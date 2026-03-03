@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import MapComponent from './MapComponent';
+import Swal from 'sweetalert2';
 
 export default function Dashboard() {
     const [user, setUser] = useState({});
@@ -11,6 +13,12 @@ export default function Dashboard() {
 
     const [ searchTerm, setSearchTerm ] = useState('');
     const [filterLevel, setFilterLevel] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filterLevel]);
 
     const fetchData = async () => {
             try {
@@ -64,18 +72,37 @@ export default function Dashboard() {
     };
 
     const handleDelete = async (id, name) => {
-        if (confirm(`Yakin ingin menghapus ${name}?`)) {
-            try {
-                const token = localStorage.getItem('ACCESS_TOKEN');
-                await axios.delete(`/api/schools/${id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                alert('Data sekolah berhasil dihapus!');
-                fetchData();
-            } catch (error){
-                alert('Gagal menghapus data sekolah!');
+        Swal.fire({
+            title: `Yakin ingin menghapus?`,
+            text: `Data ${name} akan dihapus permanen!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then(async (result) => {
+            if (result.isConfirmed){
+                try {
+                    const token = localStorage.getItem('ACCESS_TOKEN');
+                    await axios.delete(`/api/schools/${id}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    Swal.fire(
+                        'Terhapus!',
+                        'Data sekolah berhasil dihapus.',
+                        'success'
+                    );
+                    fetchData();
+                } catch (error){
+                    Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat menghapus data.',
+                        'error'
+                    );
+                }
             }
-        }
+        })
     };  
 
     const handleExportCSV = () => {
@@ -108,18 +135,36 @@ export default function Dashboard() {
         link.click();
         document.body.removeChild(link);
 
-    }
+    };
 
     const filteredSchools = schools.filter(school => {
         const matchSearch = school.name.toLowerCase().includes(searchTerm.toLowerCase()) || school.npsn.includes(searchTerm);
         const matchLevel = filterLevel ? school.level === filterLevel : true;
         return matchSearch && matchLevel;
-    })
+    });
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredSchools.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredSchools.length / itemsPerPage);
+
+    const totalSekolah = schools.length;
+    const totalSD = schools.filter(school => school.level === 'SD').length;
+    const totalSMP = schools.filter(school => school.level === 'SMP').length;
+    const totalNegeri = schools.filter(school => school.status === 'Negeri').length;
+    const totalSwasta = schools.filter(school => school.status === 'Swasta').length;
+
+    const dataAkreditasi = [
+        { name: 'Akreditasi A', jumlah: schools.filter(s => s.accreditation === 'A').length },
+        { name: 'Akreditasi B', jumlah: schools.filter(s => s.accreditation === 'B').length },
+        { name: 'Akreditasi C', jumlah: schools.filter(s => s.accreditation === 'C').length },
+        { name: 'Belum/Lainnya', jumlah: schools.filter(s => s.accreditation === 'Belum Terakreditasi' || !s.accreditation).length }
+    ]
 
     return (
         <div className="flex min-h-screen bg-gray-100">
             {/* SIDEBAR KIRI */}
-            <aside className="w-64 bg-gradient-to-b from-[#20639B] from-50% to-[#0B2235] to-100% text-white flex flex-col">
+            <aside className="w-64 bg-linear-to-b from-[#20639B] from-50% to-[#0B2235] to-100% text-white flex flex-col">
                 <div className="p-6 text-center border-b border-slate-700">
                     <h1 className="text-2xl font-bold">DINAS PATI</h1>
                     <p className="text-xs text-slate-400 mt-1">Sistem Informasi Manajemen</p>
@@ -171,15 +216,15 @@ export default function Dashboard() {
                 </div>
 
                 {/* Kartu Statistik */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
                     <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
                         <div className="flex items-center">
                             <div className="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
                                 <img src="assets/images/newspaper.png" className="w-6 h-6" alt="Newspaper Icon"/>
                             </div>
                             <div>
-                                <p className="text-gray-500 text-sm">Total Berita</p>
-                                <p className="text-2xl font-bold text-gray-800">12</p>
+                                <p className="text-sm font-semibold text-gray-500">Total Sekolah</p>
+                                <h3 className="text-2xl font-bold text-gray-800">{totalSekolah}</h3>
                             </div>
                         </div>
                     </div>
@@ -190,8 +235,8 @@ export default function Dashboard() {
                                 
                             </div>
                             <div>
-                                <p className="text-gray-500 text-sm">Data Sekolah</p>
-                                <p className="text-2xl font-bold text-gray-800">45</p>
+                                <p className="text-gray-500 text-sm">Sekolah Dasar</p>
+                                <p className="text-2xl font-bold text-gray-800">{totalSD}</p>
                             </div>
                         </div>
                     </div>
@@ -202,9 +247,28 @@ export default function Dashboard() {
                                 👥
                             </div>
                             <div>
-                                <p className="text-gray-500 text-sm">Pengunjung Hari Ini</p>
-                                <p className="text-2xl font-bold text-gray-800">1,204</p>
+                                <p className="text-gray-500 text-sm">Menengah Pertama</p>
+                                <p className="text-2xl font-bold text-gray-800">{totalSMP}</p>
                             </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center hover:shadow-md transition">
+                        <div className="flex justify-between text-sm mb-1">
+                            <span className="font-semibold text-gray-600">Negeri: {totalNegeri}</span>
+                            <span className="font-semibold text-gray-600">Swasta: {totalSwasta}</span>
+                        </div>
+                        <div className="w-full bg-orange-200 rounded-full h-2.5 mt-2 flex overflow-hidden">
+                            <div 
+                                className="bg-teal-500 h-2.5" 
+                                style={{ width: totalSekolah > 0 ? `${(totalNegeri / totalSekolah) * 100}%` : '0%' }}
+                                title={`Negeri: ${totalNegeri}`}
+                            ></div>
+                            <div 
+                                className="bg-orange-400 h-2.5" 
+                                style={{ width: totalSekolah > 0 ? `${(totalSwasta / totalSekolah) * 100}%` : '0%' }}
+                                title={`Swasta: ${totalSwasta}`}
+                            ></div>
                         </div>
                     </div>
                 </div>
@@ -275,8 +339,8 @@ export default function Dashboard() {
                                 <tr>
                                     <td colSpan="6" className="p-8 text-center text-gray-400">Sedang memuat data...</td>
                                 </tr>
-                            ) : filteredSchools.length > 0 ? (
-                                filteredSchools.map((school) => (
+                            ) : currentItems.length > 0 ? (
+                                currentItems.map((school) => (
                                     <tr key={school.id} className="hover:bg-blue-50 transition border-b last:border-0">
                                         <td className="p-4 font-mono text-slate-500">{school.npsn}</td>
                                         <td className='p-4 font-bold text-slate-800 flex items-center gap-3'>{school.photo ? (
@@ -316,9 +380,65 @@ export default function Dashboard() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* PAGINATION */}
+                    {filteredSchools.length > 0 && (
+                    <div className='flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 border-t border-gray-200'>
+                        <div className='text-sm text-gray-600 mb-4 sm:mb-0'>
+                            Menampilkan <span className='font-bold text-gray-800'>{indexOfFirstItem + 1}</span> sampai <span className='font-bold text-gray-800'>{Math.min(indexOfLastItem, filteredSchools.length)}</span> dari <span className='font-bold text-gray-800'>{filteredSchools.length}</span> data
+                        </div>
+
+                        <div className='flex gap-2'>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition'
+                            >
+                                Sebelumnya
+                            </button>
+
+                            <div className='px-4 py-2 bg-blue-100 text-blue-800 font-bold rounded-md text-sm border border-blue-200'>
+                                {currentPage} / {totalPages || 1}
+                            </div>
+                            
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages || totalPages === 0}
+                                className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition'
+                            >
+                                Selanjutnya
+                            </button>
+
+                        </div>
+
+
+                    </div>
+                    )}
+
                 </div>
 
-                <MapComponent schools={filteredSchools} />
+                {/* CHART */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                    <h3 className="text-lg font-bold text-gray-800 mb-6">Distribusi Akreditasi Sekolah</h3>
+                    <div className="h-72 w-full">
+                        <ResponsiveContainer>
+                            <BarChart
+                                data={dataAkreditasi}
+                                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb"/>
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12}}/>
+                                <YAxis axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12}}/>
+                                <Tooltip
+                                    cursor={{fill: '#f3f4f6'}}
+                                    contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'}}
+                                />
+                                <Bar dataKey="jumlah" fill="#0ea5e9" radius={[4, 4, 0, 0]} barSize={50}/>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
             </main>
         </div>
     );
