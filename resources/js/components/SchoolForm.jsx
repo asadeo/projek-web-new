@@ -171,7 +171,7 @@ export default function SchoolForm(){
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
-            <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-xl p-8">
+            <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">
                         {id ? "Edit Data Sekolah" : "Tambah Sekolah Baru"}
