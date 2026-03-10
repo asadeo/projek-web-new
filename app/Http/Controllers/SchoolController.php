@@ -108,6 +108,10 @@ class SchoolController extends Controller
             ], 404);
         }
 
+        if ($schools->photo) {
+            Storage::disk('public')->delete($schools->photo);
+        }
+
         $schools->delete();
 
         return response()->json([

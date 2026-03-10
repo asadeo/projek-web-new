@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, CircleMarker } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap, CircleMarker, Circle, GeoJSON } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -14,6 +14,24 @@ let DefaultIcon = L.icon({
     iconAnchor: [12,41],
 });
 L.Marker.prototype.options.icon = DefaultIcon;
+
+const blueIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12,41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+const redIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12,41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
 
 function LocateControl() {
     const map = useMap();
@@ -64,12 +82,33 @@ function LocateControl() {
 export default function MapComponent({ schools, onSelectSchool }){
     const position = [-6.7462, 111.0278];
 
+    const [geoData, setGeoData] = useState(null);
+
+    useEffect(() => {
+        fetch('/data/batas_kecamatan_pati_kompres.json')
+        .then(response => response.json())
+        .then(data => setGeoData(data))
+        .catch(error => console.error("Gagal memuat GeoJSON:", error));
+    }, []);
+
+    const geoJsonStyle = {
+        color: '#0B2235',
+        weight: 2,
+        opacity: 0.6,
+        fillColor: '#FFC107',
+        fillOpacity: 0.05
+    };
+
     return (
         <MapContainer center={position} zoom={11} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
             <TileLayer 
                 attribution='&copy; <a href="https://www.openstreetmap.com/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
+
+            {geoData && (
+                <GeoJSON data={geoData} style={geoJsonStyle} />
+            )}
             
             <LocateControl />
             
@@ -78,8 +117,11 @@ export default function MapComponent({ schools, onSelectSchool }){
             >
             {schools.map((school) => {
                 if (school.latitude && school.longitude) {
+                
+                const markerIcon = school.level === 'SD' ? redIcon : blueIcon;
+
                 return (
-                <Marker key={school.id} position={[school.latitude, school.longitude]}>
+                <Marker key={school.id} position={[school.latitude, school.longitude]} icon={markerIcon}>
                     <Popup>
                         <div className='text-center'>
                             {school.photo && (
