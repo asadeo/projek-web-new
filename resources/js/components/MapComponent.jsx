@@ -33,13 +33,12 @@ const redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-function LocateControl() {
+function LocateControl({ userPosition, setUserPosition }) {
     const map = useMap();
-    const [position, setPosition] = useState(null);
 
     const handleLocate = () => {
         map.locate().on("locationfound", function (e) {
-            setPosition(e.latlng);
+            setUserPosition(e.latlng);
             map.flyTo(e.latlng, 14);
         }).on("locationerror", function (e) {
             alert("Akses lokasi ditolak atau tidak dapat ditemukan oleh browser")
@@ -50,9 +49,12 @@ function LocateControl() {
     return (
         <>
             {/* Tombol Melayang di atas Peta */}
-            <div className="leaflet-top leaflet-right" style={{ top: '10px', right: '10px', position: 'absolute', zIndex: 1000 }}>
+            <div className="absolute top-4 right-4 z-1000">
                 <button 
-                    onClick={handleLocate}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleLocate();
+                    }}
                     className="bg-white text-[#0B2235] hover:bg-gray-100 font-bold py-2 px-3 rounded shadow-md border border-gray-200 flex items-center gap-2 transition"
                     title="Temukan Lokasi Saya"
                 >
@@ -61,9 +63,9 @@ function LocateControl() {
             </div>
 
             {/* Jika lokasi ditemukan, tampilkan lingkaran biru */}
-            {position && (
+            {userPosition && (
                 <CircleMarker 
-                    center={position} 
+                    center={userPosition} 
                     radius={8} 
                     pathOptions={{ color: 'white', fillColor: '#3b82f6', fillOpacity: 1, weight: 2 }}
                 >
@@ -83,6 +85,9 @@ export default function MapComponent({ schools, onSelectSchool }){
     const position = [-6.7462, 111.0278];
 
     const [geoData, setGeoData] = useState(null);
+    const [selectedDistrict, setSelectedDistrict] = useState(null);
+
+    const [userPosition, setUserPosition] = useState(null);
 
     useEffect(() => {
         fetch('/data/batas_kecamatan_pati_kompres.json')
@@ -99,61 +104,116 @@ export default function MapComponent({ schools, onSelectSchool }){
         fillOpacity: 0.05
     };
 
-    return (
-        <MapContainer center={position} zoom={11} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
-            <TileLayer 
-                attribution='&copy; <a href="https://www.openstreetmap.com/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+    const onEachFeature = (feature, layer) => {
+        const namaKecamatan = feature.properties.district || feature.properties.WADMKC; 
 
-            {geoData && (
-                <GeoJSON data={geoData} style={geoJsonStyle} />
-            )}
-            
-            <LocateControl />
-            
-            <MarkerClusterGroup
-                chunkedLoading={true}
-            >
-            {schools.map((school) => {
-                if (school.latitude && school.longitude) {
-                
-                const markerIcon = school.level === 'SD' ? redIcon : blueIcon;
+        if(namaKecamatan) {
+            layer.bindTooltip(namaKecamatan, { permanent: false, direction: 'center' });
+        }
 
-                return (
-                <Marker key={school.id} position={[school.latitude, school.longitude]} icon={markerIcon}>
-                    <Popup>
-                        <div className='text-center'>
-                            {school.photo && (
-                                <img 
-                                    src={`/storage/${school.photo}`}
-                                    alt={school.name}
-                                    className='w-full h-24 object-cover rounded mb-2'
-                                />
-                            )}
-                            <b className='text-sm'>{school.name}</b><br/>
-                            <span className='text-xs text-gray-600'>{school.level} - {school.status}</span><br/>
-                            <a href={`https://www.google.com/maps/dir/?api=1&destination=${school.latitude},${school.longitude}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className='text-blue-600 underline text-xs mt-1 block'>
-                                Rute ke lokasi
-                            </a>
+        layer.on({
+            click: (e) => {
+                const map = e.target._map;
+                map.fitBounds(e.target.getBounds());
 
-                            <button
-                                onClick={() => onSelectSchool(school)}
-                                className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded mt-2 w-full hover:bg-blue-200'
-                            >
-                                Lihat Detail Lengkap
-                            </button>
-                        </div>
-                    </Popup>
-                </Marker>
-                );
+                setSelectedDistrict(namaKecamatan);    
             }
-                return null;
-            })}
-            </MarkerClusterGroup>
-        </MapContainer>
+        });
+    };
+
+    const filteredSchools = selectedDistrict ? schools.filter(school => school.district.toLowerCase() === selectedDistrict.toLowerCase()) : schools;
+
+    return (
+
+        <div className="relative">
+            {selectedDistrict && (
+                <div className="absolute top-2 left-12 z-1000 bg-white p-2 rounded shadow text-sm">
+                    Menampilkan sekolah di: <b>{selectedDistrict}</b>
+                    <button 
+                        onClick={() => setSelectedDistrict(null)}
+                        className="ml-3 text-red-500 hover:text-red-700 underline"
+                    >
+                        Reset / Tampilkan Semua
+                    </button>
+                </div>
+            )}
+
+            <MapContainer center={position} zoom={11} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
+                <TileLayer 
+                    attribution='&copy; <a href="https://www.openstreetmap.com/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+
+                {geoData && (
+                    <GeoJSON 
+                        data={geoData} 
+                        style={geoJsonStyle} 
+                        onEachFeature={onEachFeature}    
+                    />
+                )}
+                
+                <LocateControl userPosition={userPosition} setUserPosition={setUserPosition}/>
+                
+                <MarkerClusterGroup
+                    chunkedLoading={true}
+                >
+                {filteredSchools.map((school) => {
+                    if (school.latitude && school.longitude) {
+                    
+                    const markerIcon = school.level === 'SD' ? redIcon : blueIcon;
+
+                    let distanceText = null;
+                    if (userPosition) {
+                        const schoolLatLng = L.latLng(school.latitude, school.longitude);
+                        const distanceInMeters = userPosition.distanceTo(schoolLatLng);
+                        const distanceInKm = (distanceInMeters / 1000).toFixed(2);
+
+                        const isNear = distanceInKm <= 3.00;
+                        distanceText = (
+                            <div className={`mt-1 p-1 rounded text-xs font-bold ${isNear ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                Jarak Zonasi: {distanceInKm} km
+                            </div>
+                        );
+                    }
+
+                    return (
+                    <Marker key={school.id} position={[school.latitude, school.longitude]} icon={markerIcon}>
+                        <Popup>
+                            <div className='text-center'>
+                                {school.photo && (
+                                    <img 
+                                        src={`/storage/${school.photo}`}
+                                        alt={school.name}
+                                        className='w-full h-24 object-cover rounded mb-2'
+                                    />
+                                )}
+                                <b className='text-sm'>{school.name}</b><br/>
+                                <span className='text-xs text-gray-600'>{school.level} - {school.status}</span><br/>
+
+                                {distanceText}
+
+                                <a href={`https://www.google.com/maps/dir/?api=1&destination=${school.latitude},${school.longitude}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className='text-blue-600 underline text-xs mt-1 block'>
+                                    Rute ke lokasi
+                                </a>
+
+                                <button
+                                    onClick={() => onSelectSchool(school)}
+                                    className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded mt-2 w-full hover:bg-blue-200'
+                                >
+                                    Lihat Detail Lengkap
+                                </button>
+                            </div>
+                        </Popup>
+                    </Marker>
+                    );
+                }
+                    return null;
+                })}
+                </MarkerClusterGroup>
+            </MapContainer>
+    </div>
     )
 }
