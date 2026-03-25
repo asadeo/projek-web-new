@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import MapComponent from './MapComponent';
 import Swal from 'sweetalert2';
+import Settings from './Settings';
+import NewsList from './NewsList';
 
 export default function Dashboard() {
     const [user, setUser] = useState({});
@@ -11,6 +12,7 @@ export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    const [activeMenu, setActiveMenu] = useState('dashboard');
     const [ searchTerm, setSearchTerm ] = useState('');
     const [filterLevel, setFilterLevel] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -174,21 +176,21 @@ export default function Dashboard() {
                 <nav className="flex-1 p-4 space-y-2">
                     <p className="text-xs text-slate-400 uppercase mb-2">Menu</p>
 
-                    <a href="#" className="block py-2.5 px-4 rounded bg-[#FFC107]/10 text-[#FFC107] font-semibold hover:bg-[#FFC107]/20 transition">
+                    <button onClick={() => setActiveMenu('dashboard')} className={`w-full text-left py-2.5 px-4 rounded transition ${activeMenu === 'dashboard' ? 'bg-[#FFC107]/10 text-[#FFC107] font-semibold' : 'hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107]'}`}>
                         Dashboard
-                    </a>
-                    <a href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">
+                    </button>
+                    <button onClick={() => setActiveMenu('news')} className={`w-full text-left py-2.5 px-4 rounded transition ${activeMenu === 'news' ? 'bg-[#FFC107]/10 text-[#FFC107] font-semibold' : 'hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107]'}`}>
                         Konten Website
-                    </a>
-                    <a href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">    
+                    </button>
+                    <button href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">    
                         Layanan Publik
-                    </a>
-                    <a href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">
+                    </button>
+                    <button href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">
                         Data
-                    </a>
-                    <a href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">
+                    </button>
+                    <button onClick={() => setActiveMenu('settings')} className={`w-full text-left py-2.5 px-4 rounded transition ${activeMenu === 'settings' ? 'bg-[#FFC107]/10 text-[#FFC107] font-semibold' : 'hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107]'}`}>
                         Pengaturan
-                    </a>
+                    </button>
                 </nav>
 
                 {/* Tombol Logout di Bawah */}
@@ -207,7 +209,7 @@ export default function Dashboard() {
                 {/* Header Konten */}
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h2 className="text-3xl font-bold text-gray-800">Dashboard</h2>
+                        <h2 className="text-3xl font-bold text-gray-800">{activeMenu === 'dashboard' ? 'Dashboard' : 'Konten Website'}</h2>
                         <p className="text-gray-500">Selamat datang kembali, <span className="font-semibold text-blue-600">{user.name}</span>!</p>
                     </div>
                     <div className="bg-white p-2 rounded-full shadow">
@@ -215,229 +217,240 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Kartu Statistik */}
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
-                        <div className="flex items-center">
-                            <div className="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
-                                <img src="assets/images/newspaper.png" className="w-6 h-6" alt="Newspaper Icon"/>
+            {activeMenu === 'dashboard' && (
+                <>
+                    {/* Kartu Statistik */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+                            <div className="flex items-center">
+                                <div className="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
+                                    <img src="assets/images/newspaper.png" className="w-6 h-6" alt="Newspaper Icon"/>
+                                </div>
+                                <div>
+                                    <p className="text-sm font-semibold text-gray-500">Total Sekolah</p>
+                                    <h3 className="text-2xl font-bold text-gray-800">{totalSekolah}</h3>
+                                </div>
                             </div>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
+                            <div className="flex items-center">
+                                <div className="p-3 rounded-full bg-green-100 text-green-500 mr-4">
+                                    
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 text-sm">Sekolah Dasar</p>
+                                    <p className="text-2xl font-bold text-gray-800">{totalSD}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
+                            <div className="flex items-center">
+                                <div className="p-3 rounded-full bg-purple-100 text-purple-500 mr-4">
+                                    👥
+                                </div>
+                                <div>
+                                    <p className="text-gray-500 text-sm">Menengah Pertama</p>
+                                    <p className="text-2xl font-bold text-gray-800">{totalSMP}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center hover:shadow-md transition">
+                            <div className="flex justify-between text-sm mb-1">
+                                <span className="font-semibold text-gray-600">Negeri: {totalNegeri}</span>
+                                <span className="font-semibold text-gray-600">Swasta: {totalSwasta}</span>
+                            </div>
+                            <div className="w-full bg-orange-200 rounded-full h-2.5 mt-2 flex overflow-hidden">
+                                <div 
+                                    className="bg-teal-500 h-2.5" 
+                                    style={{ width: totalSekolah > 0 ? `${(totalNegeri / totalSekolah) * 100}%` : '0%' }}
+                                    title={`Negeri: ${totalNegeri}`}
+                                ></div>
+                                <div 
+                                    className="bg-orange-400 h-2.5" 
+                                    style={{ width: totalSekolah > 0 ? `${(totalSwasta / totalSekolah) * 100}%` : '0%' }}
+                                    title={`Swasta: ${totalSwasta}`}
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* HEADER TABEL */}
+                    <div className='mt-8 mb-4'>
+                        <div className="flex justify-between items-center mb-6">
                             <div>
-                                <p className="text-sm font-semibold text-gray-500">Total Sekolah</p>
-                                <h3 className="text-2xl font-bold text-gray-800">{totalSekolah}</h3>
+                                <h2 className="text-3xl font-bold text-gray-800">Data Sekolah</h2>
+                                <p className="text-gray-500">Daftar sekolah di Kabupaten Pati</p>
+                            </div>
+                            <div className='flex items-centers gap-4'>
+                                <button onClick={() => navigate('/schools/create')}
+                                className='bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded shadow flex items-center gap-2 cursor-pointer'>
+                                    + Tambah Sekolah
+                                </button>
+                                <div className="bg-white px-4 py-2 rounded shadow text-sm font-semibold text-blue-600">
+                                    Total: {filteredSchools.length} Sekolah
+                                </div>
+                                <button 
+                                    onClick={handleExportCSV}
+                                    className='bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg shadow-md font-semibold flex items-center gap-2 transition transform hover:-translate-y-0.5 cursor-pointer'
+                                >
+                                    <span>Unduh CSV</span>
+                                </button>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
-                        <div className="flex items-center">
-                            <div className="p-3 rounded-full bg-green-100 text-green-500 mr-4">
-                                
-                            </div>
-                            <div>
-                                <p className="text-gray-500 text-sm">Sekolah Dasar</p>
-                                <p className="text-2xl font-bold text-gray-800">{totalSD}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
-                        <div className="flex items-center">
-                            <div className="p-3 rounded-full bg-purple-100 text-purple-500 mr-4">
-                                👥
-                            </div>
-                            <div>
-                                <p className="text-gray-500 text-sm">Menengah Pertama</p>
-                                <p className="text-2xl font-bold text-gray-800">{totalSMP}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-center hover:shadow-md transition">
-                        <div className="flex justify-between text-sm mb-1">
-                            <span className="font-semibold text-gray-600">Negeri: {totalNegeri}</span>
-                            <span className="font-semibold text-gray-600">Swasta: {totalSwasta}</span>
-                        </div>
-                        <div className="w-full bg-orange-200 rounded-full h-2.5 mt-2 flex overflow-hidden">
-                            <div 
-                                className="bg-teal-500 h-2.5" 
-                                style={{ width: totalSekolah > 0 ? `${(totalNegeri / totalSekolah) * 100}%` : '0%' }}
-                                title={`Negeri: ${totalNegeri}`}
-                            ></div>
-                            <div 
-                                className="bg-orange-400 h-2.5" 
-                                style={{ width: totalSekolah > 0 ? `${(totalSwasta / totalSekolah) * 100}%` : '0%' }}
-                                title={`Swasta: ${totalSwasta}`}
-                            ></div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* HEADER TABEL */}
-                <div className='mt-8 mb-4'>
-                    <div className="flex justify-between items-center mb-6">
-                        <div>
-                            <h2 className="text-3xl font-bold text-gray-800">Data Sekolah</h2>
-                            <p className="text-gray-500">Daftar sekolah di Kabupaten Pati</p>
-                        </div>
-                        <div className='flex items-centers gap-4'>
-                            <button onClick={() => navigate('/schools/create')}
-                            className='bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded shadow flex items-center gap-2'>
-                                + Tambah Sekolah
-                            </button>
-                            <div className="bg-white px-4 py-2 rounded shadow text-sm font-semibold text-blue-600">
-                                Total: {filteredSchools.length} Sekolah
-                            </div>
-                            <button 
-                                onClick={handleExportCSV}
-                                className='bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg shadow-md font-semibold flex items-center gap-2 transition transform hover:-translate-y-0.5'
-                            >
-                                <span>Unduh CSV</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div className='bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 mb-6'>
-                        <div className='flex-1'>
-                            <input
-                                type='text'
-                                placeholder='Cari NPSN atau Nama Sekolah...'
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none'
-                            />
-                        </div>
-                        <div className='w-full md:w-48'>
-                            <select
-                                value={filterLevel}
-                                onChange={(e) => setFilterLevel(e.target.value)}
-                                className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none'
-                            >
-                                <option value="">Semua Jenjang</option>
-                                <option value="SD">SD</option>
-                                <option value="SMP">SMP</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* TABEL DATA */}
-                <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
-                    <table className="w-full text-left border-collapse">
-                        <thead className="bg-slate-100 text-slate-600 uppercase text-xs font-bold">
-                            <tr>
-                                <th className="p-4 border-b">NPSN</th>
-                                <th className="p-4 border-b">Nama Sekolah</th>
-                                <th className="p-4 border-b">Kecamatan</th>
-                                <th className="p-4 border-b text-center">Jenjang</th>
-                                <th className="p-4 border-b text-center">Akreditasi</th>
-                                <th className="p-4 border-b text-center">Total Siswa (2025)</th>
-                                <th className="p-4 border-b text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-sm text-gray-700">
-                            {loading ? (
-                                <tr>
-                                    <td colSpan="6" className="p-8 text-center text-gray-400">Sedang memuat data...</td>
-                                </tr>
-                            ) : currentItems.length > 0 ? (
-                                currentItems.map((school) => (
-                                    <tr key={school.id} className="hover:bg-blue-50 transition border-b last:border-0">
-                                        <td className="p-4 font-mono text-slate-500">{school.npsn}</td>
-                                        <td className='p-4 font-bold text-slate-800 flex items-center gap-3'>{school.photo ? (
-                                            <img src={`/storage/${school.photo}`} className='w-10 h-10 rounded-md object-cover border' alt='foto'/>):(
-                                            <div className='w-10 h-10 rounded-md bg-gray-100 border flex items-center justify-center text-gray-400 text-lg'>🏫</div>
-                                            )}
-                                            <span>{school.name}</span>
-                                        </td>
-                                        <td className="p-4">{school.district}</td>
-                                        <td className="p-4 text-center">
-                                            <span className={`px-2 py-1 rounded text-xs font-bold ${school.level === 'SD' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                                                {school.level}
-                                            </span>
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold">{school.accreditation}</span>
-                                        </td>
-                                        <td className="p-4 text-center font-bold">{school.student_2025}</td>
-                                        <td className='p-4 text-center flex justify-center gap-2'>
-                                            <button 
-                                                onClick={() => navigate(`/schools/edit/${school.id}`)}
-                                                className='bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm shadow'>
-                                                Edit
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDelete(school.id, school.name)}
-                                                className='bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm shadow'>
-                                                Hapus
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="6" className="p-8 text-center text-red-400">Belum ada data sekolah.</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-
-                    {/* PAGINATION */}
-                    {filteredSchools.length > 0 && (
-                    <div className='flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 border-t border-gray-200'>
-                        <div className='text-sm text-gray-600 mb-4 sm:mb-0'>
-                            Menampilkan <span className='font-bold text-gray-800'>{indexOfFirstItem + 1}</span> sampai <span className='font-bold text-gray-800'>{Math.min(indexOfLastItem, filteredSchools.length)}</span> dari <span className='font-bold text-gray-800'>{filteredSchools.length}</span> data
-                        </div>
-
-                        <div className='flex gap-2'>
-                            <button
-                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1}
-                                className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition'
-                            >
-                                Sebelumnya
-                            </button>
-
-                            <div className='px-4 py-2 bg-blue-100 text-blue-800 font-bold rounded-md text-sm border border-blue-200'>
-                                {currentPage} / {totalPages || 1}
-                            </div>
-                            
-                            <button
-                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages || totalPages === 0}
-                                className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition'
-                            >
-                                Selanjutnya
-                            </button>
-
-                        </div>
-
-
-                    </div>
-                    )}
-
-                </div>
-
-                {/* CHART */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
-                    <h3 className="text-lg font-bold text-gray-800 mb-6">Distribusi Akreditasi Sekolah</h3>
-                    <div className="h-72 w-full">
-                        <ResponsiveContainer>
-                            <BarChart
-                                data={dataAkreditasi}
-                                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb"/>
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12}}/>
-                                <YAxis axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12}}/>
-                                <Tooltip
-                                    cursor={{fill: '#f3f4f6'}}
-                                    contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'}}
+                        <div className='bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 mb-6'>
+                            <div className='flex-1'>
+                                <input
+                                    type='text'
+                                    placeholder='Cari NPSN atau Nama Sekolah...'
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none'
                                 />
-                                <Bar dataKey="jumlah" fill="#0ea5e9" radius={[4, 4, 0, 0]} barSize={50}/>
-                            </BarChart>
-                        </ResponsiveContainer>
+                            </div>
+                            <div className='w-full md:w-48'>
+                                <select
+                                    value={filterLevel}
+                                    onChange={(e) => setFilterLevel(e.target.value)}
+                                    className='w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none'
+                                >
+                                    <option value="">Semua Jenjang</option>
+                                    <option value="SD">SD</option>
+                                    <option value="SMP">SMP</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    {/* TABEL DATA */}
+                    <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
+                        <table className="w-full text-left border-collapse">
+                            <thead className="bg-slate-100 text-slate-600 uppercase text-xs font-bold">
+                                <tr>
+                                    <th className="p-4 border-b">NPSN</th>
+                                    <th className="p-4 border-b">Nama Sekolah</th>
+                                    <th className="p-4 border-b">Kecamatan</th>
+                                    <th className="p-4 border-b text-center">Jenjang</th>
+                                    <th className="p-4 border-b text-center">Akreditasi</th>
+                                    <th className="p-4 border-b text-center">Total Siswa (2025)</th>
+                                    <th className="p-4 border-b text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-sm text-gray-700">
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="6" className="p-8 text-center text-gray-400">Sedang memuat data...</td>
+                                    </tr>
+                                ) : currentItems.length > 0 ? (
+                                    currentItems.map((school) => (
+                                        <tr key={school.id} className="hover:bg-blue-50 transition border-b last:border-0">
+                                            <td className="p-4 font-mono text-slate-500">{school.npsn}</td>
+                                            <td className='p-4 font-bold text-slate-800 flex items-center gap-3'>{school.photo ? (
+                                                <img src={`/storage/${school.photo}`} className='w-10 h-10 rounded-md object-cover border' alt='foto'/>):(
+                                                <div className='w-10 h-10 rounded-md bg-gray-100 border flex items-center justify-center text-gray-400 text-lg'>🏫</div>
+                                                )}
+                                                <span>{school.name}</span>
+                                            </td>
+                                            <td className="p-4">{school.district}</td>
+                                            <td className="p-4 text-center">
+                                                <span className={`px-2 py-1 rounded text-xs font-bold ${school.level === 'SD' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+                                                    {school.level}
+                                                </span>
+                                            </td>
+                                            <td className="p-4 text-center">
+                                                <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded font-bold">{school.accreditation}</span>
+                                            </td>
+                                            <td className="p-4 text-center font-bold">{school.student_2025}</td>
+                                            <td className='p-4 text-center flex justify-center gap-2'>
+                                                <button 
+                                                    onClick={() => navigate(`/schools/edit/${school.id}`)}
+                                                    className='bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm shadow'>
+                                                    Edit
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDelete(school.id, school.name)}
+                                                    className='bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm shadow'>
+                                                    Hapus
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="6" className="p-8 text-center text-red-400">Belum ada data sekolah.</td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+
+                        {/* PAGINATION */}
+                        {filteredSchools.length > 0 && (
+                        <div className='flex flex-col sm:flex-row justify-between items-center p-4 bg-gray-50 border-t border-gray-200'>
+                            <div className='text-sm text-gray-600 mb-4 sm:mb-0'>
+                                Menampilkan <span className='font-bold text-gray-800'>{indexOfFirstItem + 1}</span> sampai <span className='font-bold text-gray-800'>{Math.min(indexOfLastItem, filteredSchools.length)}</span> dari <span className='font-bold text-gray-800'>{filteredSchools.length}</span> data
+                            </div>
+
+                            <div className='flex gap-2'>
+                                <button
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                    disabled={currentPage === 1}
+                                    className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition'
+                                >
+                                    Sebelumnya
+                                </button>
+
+                                <div className='px-4 py-2 bg-blue-100 text-blue-800 font-bold rounded-md text-sm border border-blue-200'>
+                                    {currentPage} / {totalPages || 1}
+                                </div>
+                                
+                                <button
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                    disabled={currentPage === totalPages || totalPages === 0}
+                                    className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition'
+                                >
+                                    Selanjutnya
+                                </button>
+
+                            </div>
+
+
+                        </div>
+                        )}
+
+                    </div>
+
+                    {/* CHART */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 mb-8">
+                        <h3 className="text-lg font-bold text-gray-800 mb-6">Distribusi Akreditasi Sekolah</h3>
+                        <div className="h-72 w-full">
+                            <ResponsiveContainer>
+                                <BarChart
+                                    data={dataAkreditasi}
+                                    margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb"/>
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12}}/>
+                                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12}}/>
+                                    <Tooltip
+                                        cursor={{fill: '#f3f4f6'}}
+                                        contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'}}
+                                    />
+                                    <Bar dataKey="jumlah" fill="#0ea5e9" radius={[4, 4, 0, 0]} barSize={50}/>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </>          
+            )}
+
+            {activeMenu === 'news' && (
+                <NewsList />
+            )}
+            {activeMenu === 'settings' && (
+                <Settings />
+            )}
 
             </main>
         </div>

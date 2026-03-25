@@ -6,6 +6,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import SchoolForm from './components/SchoolForm';
 import LandingPage from './components/LandingPage';
+import NewsForm from './components/NewsForm';
 
 function App() {
     const token = localStorage.getItem('ACCESS_TOKEN');
@@ -25,9 +26,10 @@ function App() {
                     element={token ? <SchoolForm /> : <Navigate to="/login" />} 
                 />
                 <Route 
-                    path="/dashboard" 
+                    path="/admin" 
                     element={token ? <Dashboard /> : <Navigate to="/login" />} 
                 />
+                <Route path="/news/create" element={<NewsForm />} />
             </Routes>
         </BrowserRouter>
     );

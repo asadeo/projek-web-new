@@ -26,7 +26,7 @@ export default function Login() {
                 timer: 1500,
                 showConfirmButton: false
             }).then(() => {
-                window.location.href = '/dashboard';
+                window.location.href = '/admin';
             })
         } catch (error) {
             Swal.fire({
@@ -52,7 +52,7 @@ export default function Login() {
                     Login Admin
                 </h2>
                 <p className="mt-2 text-center text-sm text-gray-600">
-                    Sistem Informasi Geografis Sekolah Kabupaten Pati
+                    Sistem Informasi Sekolah Kabupaten Pati
                 </p>
             </div>
 
