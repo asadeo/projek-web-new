@@ -48,7 +48,7 @@ export default function NewsForm() {
             const token = localStorage.getItem('ACCESS_TOKEN');
             await axios.post('/api/news', data, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
             });
@@ -120,7 +120,7 @@ export default function NewsForm() {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Judul Berita</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Foto Berita</label>
                         <input
                             type="file"
                             accept="image/*"

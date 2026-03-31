@@ -41,7 +41,6 @@ class NewsController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $validated = request()->all();
         $validated['slug'] = Str::slug($request->title);
 
         if ($request->hasFile('image')){
@@ -99,7 +98,6 @@ class NewsController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
-        $validated = request()->all();
         $validated['slug'] = Str::slug($request->title);
 
         if ($request->hasFile('image')){

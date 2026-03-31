@@ -3,6 +3,7 @@
 Use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controller\SettingController;
 use Illuminate\Http\Request;
 Use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,8 @@ Route::get('/schools/{id}', [SchoolController::class, 'show']);
 
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{id}', [NewsController::class, 'show']);
+
+Route::get('/settings', [SettingController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -27,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/news', [NewsController::class, 'store']);
     Route::put('/news/{id}', [NewsController::class, 'update']);
     Route::delete('/news/{id}', [NewsController::class, 'destroy']);
+
+    Route::post('/settings', [SettingController::class, 'update']);
 });
 
 
