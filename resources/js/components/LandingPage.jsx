@@ -14,7 +14,7 @@ export default function LandingPage() {
     const [filterStatus, setFilterStatus] = useState('');
 
     useEffect(() => {
-        axios.get('/api/public/schools')
+        axios.get('/api/schools')
             .then(res => {
                 const data = res.data.schools || res.data || [];
                 setSchools(data)

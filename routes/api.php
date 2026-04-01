@@ -3,7 +3,7 @@
 Use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\NewsController;
-use App\Http\Controller\SettingController;
+use App\Http\Controllers\SettingController;
 use Illuminate\Http\Request;
 Use Illuminate\Support\Facades\Route;
 

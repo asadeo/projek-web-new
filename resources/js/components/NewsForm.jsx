@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function NewsForm() {
     const navigate = useNavigate();
+    const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
@@ -13,6 +14,30 @@ export default function NewsForm() {
         image: null
     });
     const [preview, setPreview] = useState(null);
+
+    useEffect(() => {
+        if (id) {
+            fetchNewsDetail();
+        }
+    }, [id]);
+
+    const fetchNewsDetail = async () => {
+        try {
+            const response = await axios.get(`/api/news/${id}`);
+            const newsData = response.data.news;
+            setFormData({
+                title: newsData.title,
+                content: newsData.content,
+                status: newsData.status,
+                image: null 
+            });
+            if (newsData.image) {
+                setPreview(`/storage/${newsData.image}`); 
+            }
+        } catch (error) {
+            console.error("Gagal mengambil data", error);
+        }
+    };
 
     const handleChange = (e) => {
         setFormData({
@@ -46,12 +71,19 @@ export default function NewsForm() {
         
         try {
             const token = localStorage.getItem('ACCESS_TOKEN');
-            await axios.post('/api/news', data, {
+            const config = {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'
                 }
-            });
+            };
+
+            if (id) {
+                data.append('_method', 'PUT');
+                await axios.post(`/api/news/${id}`, data, config);
+            } else {
+                await axios.post('/api/news', data, config);
+            }
 
             Swal.fire({
                 icon: 'success',
@@ -61,7 +93,7 @@ export default function NewsForm() {
                 timer: 2000
             });
 
-            navigate(-1);
+            navigate('/admin', { state: { activeMenu: 'news' } });
         } catch (error) {
             console.error(error);
             Swal.fire({
@@ -83,7 +115,7 @@ export default function NewsForm() {
                         <p className="text-gray-500 text-sm">Buat artikel atau pengumuman untuk portal website</p>
                     </div>
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate('/admin', { state: { activeMenu: 'news' } })}
                         className="text-gray-500 hover:text-gray-800 font-semibold"
                     >
                         Batal & Kembali

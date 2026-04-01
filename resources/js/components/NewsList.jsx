@@ -49,7 +49,7 @@ const NewsList = () => {
                         'Data berita berhasil dihapus.',
                         'success'
                     );
-                    fetchData();
+                    fetchNews();
                 } catch (error){
                     Swal.fire(
                         'Gagal!',

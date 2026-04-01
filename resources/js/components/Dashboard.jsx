@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Swal from 'sweetalert2';
 import Settings from './Settings';
@@ -10,9 +10,11 @@ export default function Dashboard() {
     const [user, setUser] = useState({});
     const [schools, setSchools] = useState([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
-    const [activeMenu, setActiveMenu] = useState('dashboard');
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [activeMenu, setActiveMenu] = useState(location.state?.activeMenu || 'dashboard');
     const [ searchTerm, setSearchTerm ] = useState('');
     const [filterLevel, setFilterLevel] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -435,7 +437,7 @@ export default function Dashboard() {
                                     <YAxis axisLine={false} tickLine={false} tick={{fill: '#6b7280', fontSize: 12}}/>
                                     <Tooltip
                                         cursor={{fill: '#f3f4f6'}}
-                                        contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'}}
+                                        contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px 0px rgba(0, 0, 0, 0.1)'}}
                                     />
                                     <Bar dataKey="jumlah" fill="#0ea5e9" radius={[4, 4, 0, 0]} barSize={50}/>
                                 </BarChart>

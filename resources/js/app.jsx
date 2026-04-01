@@ -30,6 +30,7 @@ function App() {
                     element={token ? <Dashboard /> : <Navigate to="/login" />} 
                 />
                 <Route path="/news/create" element={<NewsForm />} />
+                <Route path="/news/edit/:id" element={<NewsForm />} />
             </Routes>
         </BrowserRouter>
     );
