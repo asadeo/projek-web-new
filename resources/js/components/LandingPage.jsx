@@ -8,10 +8,21 @@ export default function LandingPage() {
     const [schools, setSchools] = useState([]);
     const [selectedSchool, setSelectedSchool] = useState(null);
     const navigate = useNavigate();
+
     const [filteredSchools, setFilteredSchools] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterLevel, setFilterLevel] = useState('');
     const [filterStatus, setFilterStatus] = useState('');
+
+    const [settings, setSettings] = useState({
+        siteName: 'Dinas Pendidikan dan Kebudayaan Kabupaten Pati',
+        welcomeText: 'Dinas Pendidikan dan Kebudayaan (Disdikbud) Kabupaten Pati adalah organisasi perangkat daerah yang bertanggung jawab atas Sekolah dan Guru di Kabupaten Pati, Jawa Tengah.',
+        email: 'disdikbud@patikab.go.id',
+        phone: '(0295) 381456',
+        address: 'Jl. P. Sudirman No. 1, Pati Lor, Kec. Pati, Kabupaten Pati, Jawa Tengah 59111',
+        siteLogo: ''
+    })
+    const [publicNews, setPublicNews] = useState([]);
 
     useEffect(() => {
         axios.get('/api/schools')
@@ -19,6 +30,23 @@ export default function LandingPage() {
                 const data = res.data.schools || res.data || [];
                 setSchools(data)
                 setFilteredSchools(data);
+            })
+            .catch(err => console.error("Gagal memuat data:", err));
+
+        axios.get('/api/settings')
+            .then(res => {
+                if (res.data && res.data.data){
+                    setSettings(prev => ({...prev, ...res.data.data}));
+                }
+            })
+            .catch(err => console.error("Gagal memuat data:", err));
+        
+        axios.get('/api/news')
+            .then(res => {
+                if (res.data && res.data.news){
+                    const published = res.data.news.filter(n => n.status === 'published');
+                    setPublicNews(published);
+                }
             })
             .catch(err => console.error("Gagal memuat data:", err));
     }, []);
@@ -62,7 +90,7 @@ export default function LandingPage() {
                         {/* LOGO */}
                         <div className="flex items-center gap-3">
                             <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lambang_Kabupaten_Pati.png/486px-Lambang_Kabupaten_Pati.png"
+                                src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "/assets/images/logoDisdikbud.png"}
                                 alt="Logo"
                                 className="h-12 w-auto drop-shadow-md"
                             />
@@ -86,16 +114,14 @@ export default function LandingPage() {
 
             {/* Hero Section */}
             <div className='relative pt-20 pb-32 px-4 text-center overflow-visible'>
-                <div className="absolute inset-0 z-0" style={{ backgroundImage: "url('/assets/images/Image_Banner.jpeg')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", opacity: "0.5"}} ></div>
+                <div className="absolute inset-0 z-0" style={{ backgroundImage: "url('/assets/images/logoDisdikbud.png')", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat", opacity: "0.5"}} ></div>
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <div className="relative z-10 max-w-4xl mx-auto">
                     <h1 className="text-white text-3xl md:text-5xl font-bold mb-4 tracking-tight leading-tight">
-                        Selamat Datang<br />
-                        Di Disdikbud Kab Pati
+                        {settings.siteName}
                     </h1>
                     <p className="text-white max-w-2xl mx-auto text-sm md:text-base px-4">
-                        Dinas Pendidikan dan Kebudayaan (Disdikbud) Kabupaten Pati adalah organisasi perangkat daerah yang
-                        bertanggung jawab atas Sekolah dan Guru di Kabupaten Pati, Jawa Tengah.
+                        {settings.welcomeText}
                     </p>
                 </div>
             </div>
@@ -111,7 +137,7 @@ export default function LandingPage() {
                             </svg>
                         </div>
                         <span className="font-bold text-gray-800 text-lg">Sekolah</span>
-                        <span className="text-[#F59E0B] font-bold text-xl">508</span>
+                        <span className="text-[#F59E0B] font-bold text-xl">{schools.length}</span>
                     </div>
 
                     {/* Card 2: Siswa */}
@@ -121,7 +147,7 @@ export default function LandingPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </div>
-                        <span className="font-bold text-gray-800 text-lg">Siswa</span>
+                        <span className="font-bold text-gray-800 text-lg">Siswa (Estimasi)</span>
                         <span className="text-[#F59E0B] font-bold text-xl">{totalSiswa.toLocaleString('id-ID')}</span>
                     </div>
 
@@ -134,7 +160,7 @@ export default function LandingPage() {
                             </svg>
                         </div>
                         <span className="font-bold text-gray-800 text-lg">Guru</span>
-                        <span className="text-[#F59E0B] font-bold text-xl">580</span>
+                        <span className="text-[#F59E0B] font-bold text-xl">pending</span>
                     </div>
                 </div>
             </div>
@@ -267,52 +293,56 @@ export default function LandingPage() {
                             Selengkapnya &rarr;
                         </a>
                     </div>
-
-                    <div className="flex flex-col md:flex-row gap-8">
+                    
+                    {publicNews.length > 0 ? (
+                        <div className="flex flex-col md:flex-row gap-8">
                         {/* Featured News (Left, Large) */}
                         <div className="md:w-1/2 group cursor-pointer">
                             <div className="relative h-64 md:h-80 rounded-xl overflow-hidden mb-4 shadow-lg">
                                 <img
-                                    src="https://plus.unsplash.com/premium_photo-1661962692047-92900e3182b2?q=80&w=2070&auto=format&fit=crop"
-                                    alt="Featured News"
+                                    src={publicNews[0].image ? `/storage/${publicNews[0].image}` : "https://plus.unsplash.com/premium_photo-1661962692047-92900e3182b2?q=80&w=2070&auto=format&fit=crop"}
+                                    alt={publicNews[0].title}
                                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                                 />
                                 <div className="absolute top-4 left-4 bg-[#FFC107] text-black text-xs font-bold px-3 py-1 rounded">
-                                    PENDIDIKAN
+                                    TERBARU
                                 </div>
                             </div>
                             <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2 group-hover:text-blue-700 transition">
-                                Disdikbud Pati Luncurkan Program "Sekolah Digital" untuk Pemerataan Mutu Pendidikan
+                                {publicNews[0].title || 'Judul Berita'}
                             </h3>
                             <p className="text-gray-500 text-sm mb-2 line-clamp-2">
-                                Dinas Pendidikan dan Kebudayaan Kabupaten Pati resmi meluncurkan program sekolah digital sebagai upaya pemerataan kualitas pendidikan di seluruh wilayah.
+                                {publicNews[0].content}
                             </p>
-                            <span className="text-gray-400 text-xs">12 Januari 2026 • Oleh Admin</span>
+                            <span className="text-gray-400 text-xs">{new Date(publicNews[0].created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                         </div>
 
                         {/* Recent News List (Right) */}
                         <div className="md:w-1/2 flex flex-col gap-4">
-                            {[1, 2, 3].map((item) => (
-                                <div key={item} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100 group">
-                                    <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+                            {publicNews.slice(1,4).map((item) => (
+                                <div key={item.id} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100 group">
+                                    <div className="w-24 h-24 shrink-0 rounded-lg overflow-hidden">
                                         <img
-                                            src={`https://images.unsplash.com/photo-1577896335477-1636d919864${item}?q=80&w=200&auto=format&fit=crop`}
-                                            alt="News Thumbnail"
+                                            src={item.image ? `/storage/${item.image}` : "https://images.unsplash.com/photo-1577896335477-1636d919864?q=80&w=200&auto=format&fit=crop"}
+                                            alt={item.title}
                                             className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                                         />
                                     </div>
                                     <div className="flex flex-col justify-center">
                                         <h4 className="font-bold text-gray-800 mb-1 group-hover:text-blue-700 transition line-clamp-2">
-                                            {item === 1 ? "Disdikbud Pati Gelar Lomba Inovasi Pembelajaran Guru" :
-                                                item === 2 ? "Persiapan PPDB 2026, Disdikbud Pastikan Transparansi" :
-                                                    "Penghargaan Adiwiyata untuk 10 Sekolah di Pati"}
+                                            {item.title}
                                         </h4>
-                                        <span className="text-gray-400 text-xs mt-1">10 Januari 2026 • Berita</span>
+                                        <span className="text-gray-400 text-xs mt-1">{new Date(publicNews[0].created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+                    ) : (
+                        <div className="w-full text-center py-12 bg-white rounded-xl border border-gray-200">
+                            <p className="text-gray-500">Belum ada berita yang diterbitkan saat ini.</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -417,7 +447,10 @@ export default function LandingPage() {
                         {/* Kolom 1: Identitas */}
                         <div>
                             <div className="flex items-center gap-3 mb-6">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lambang_Kabupaten_Pati.png/486px-Lambang_Kabupaten_Pati.png" alt="Logo" className="h-12 w-auto" />
+                                <img 
+                                    src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "/assets/images/logoDisdikbud.png"}
+                                    alt="Logo"
+                                    className="h-12 w-auto" />
                                 <div>
                                     <h3 className="font-bold text-lg leading-none">DINAS PENDIDIKAN</h3>
                                     <span className="text-xs text-blue-300 tracking-widest">KABUPATEN PATI</span>
@@ -452,18 +485,16 @@ export default function LandingPage() {
                                 <li className="flex items-start gap-3">
                                     <span className="mt-1 text-[#FFC107]">📍</span>
                                     <span>
-                                        Jl. P. Sudirman No. 1, Pati Lor,<br />
-                                        Kec. Pati, Kabupaten Pati,<br />
-                                        Jawa Tengah 59111
+                                        {settings.address}
                                     </span>
                                 </li>
                                 <li className="flex items-center gap-3">
                                     <span className="text-[#FFC107]">📞</span>
-                                    <span>(0295) 381456</span>
+                                    <span>{settings.phone}</span>
                                 </li>
                                 <li className="flex items-center gap-3">
                                     <span className="text-[#FFC107]">✉️</span>
-                                    <span>disdik@patikab.go.id</span>
+                                    <span>{settings.email}</span>
                                 </li>
                             </ul>
                         </div>
@@ -491,7 +522,7 @@ export default function LandingPage() {
                         </div>
                         {/* Copyright Bar */}
                         <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-                            <p>&copy; 2026 Dinas Pendidikan dan Kebudayaan Kabupaten Pati. Hak Cipta Dilindungi.</p>
+                            <p>&copy; 2026 {settings.siteName}. Hak Cipta Dilindungi.</p>
                         </div>
                     </div>
                 </div>

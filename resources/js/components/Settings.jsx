@@ -11,8 +11,11 @@ export default function Settings() {
         welcomeText: '',
         email: '',
         phone: '',
-        address: ''
+        address: '',
+        siteLogo: ''
     })
+
+    const [logoFile, setLogoFile] = useState(null);
 
     useEffect(() => {
         fetchSettings();
@@ -22,6 +25,11 @@ export default function Settings() {
       try {
         const response = await axios.get('/api/settings');
         if (response.data && response.data.data) {
+            const sanitizedData = {};
+            Object.keys(response.data.data).forEach(key => {
+                sanitizedData[key] = response.data.data[key] || '';
+            });
+            
             setSettings(prev => ({...prev, ...response.data.data}));
         }
       } catch (error) {
@@ -33,9 +41,13 @@ export default function Settings() {
 
     const handleChange = (e) => {
         setSettings({
-            ...Settings,
+            ...settings,
             [e.target.name]: e.target.value
         });
+    };
+
+    const handleFileChange = (e) => {
+        setLogoFile(e.target.files[0]);
     };
 
     const handleSubmit = async (e) => {
@@ -44,10 +56,21 @@ export default function Settings() {
 
         try {
             const token = localStorage.getItem('ACCESS_TOKEN');
-            await axios.get('/api/settings', settings, {
+
+            const formData = new FormData();
+            Object.keys(settings).forEach(key => {
+                formData.append(key, settings[key] || '');
+            });
+
+            if (logoFile) {
+                formData.append('logo', logoFile);
+            }
+
+            await axios.post('/api/settings', formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json'
                 }
             });
 
@@ -58,6 +81,10 @@ export default function Settings() {
                 timer: 2000,
                 showConfirmButton: false
             });
+
+            fetchSettings();
+            setLogoFile(null);
+
         } catch (error) {
             console.error("Gagal menyimpan:", error);
             Swal.fire({
@@ -92,7 +119,10 @@ export default function Settings() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Logo Website</label>
-                            <input type="file" disabled className="w-full border rounded-md px-4 py-1.5 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-50 file:text-blue-700"/>
+                            <input type="file" accept="image/*" onChange={handleFileChange} className="w-full border rounded-md px-4 py-1.5 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-50 file:text-blue-700"/>
+                            {settings.siteLogo && !logoFile && (
+                                <p className="text-xs text-green-600 mt-1">✓ Logo sudah terpasang.</p>
+                            )}
                         </div>
                     </div>
 

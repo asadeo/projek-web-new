@@ -24,7 +24,29 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->except('logo', 'siteLogo');
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('settings', 'public');
+            Setting::updateOrCreate(
+                ['key' => 'siteLogo'],
+                ['value' => $path]
+            );
+        }
+        
+        foreach ($data as $key => $value) {
+            if ($value != null){
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $value]
+                );
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pengaturan berhasil diperbarui!'
+        ]);
     }
 
     /**
@@ -40,19 +62,7 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        $data = $request->all();
-        
-        foreach ($data as $key => $value) {
-            Setting::updateOrCreate(
-                ['key' => $key],
-                ['value' => $value]
-            );
-        }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Pengaturan berhasil diperbarui!'
-        ]);
     }
 
     /**
