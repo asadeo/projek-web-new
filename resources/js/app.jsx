@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import SchoolForm from './components/SchoolForm';
 import LandingPage from './components/LandingPage';
 import NewsForm from './components/NewsForm';
+import NewsDetail from './components/NewsDetail';
 
 function App() {
     const token = localStorage.getItem('ACCESS_TOKEN');
@@ -29,6 +30,7 @@ function App() {
                     path="/admin" 
                     element={token ? <Dashboard /> : <Navigate to="/login" />} 
                 />
+                <Route path="/news/:id" element={<NewsDetail />} />
                 <Route path="/news/create" element={<NewsForm />} />
                 <Route path="/news/edit/:id" element={<NewsForm />} />
             </Routes>

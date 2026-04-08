@@ -297,7 +297,7 @@ export default function LandingPage() {
                     {publicNews.length > 0 ? (
                         <div className="flex flex-col md:flex-row gap-8">
                         {/* Featured News (Left, Large) */}
-                        <div className="md:w-1/2 group cursor-pointer">
+                        <div onClick={() => navigate(`/news/${publicNews[0].id}`)} className="md:w-1/2 group cursor-pointer">
                             <div className="relative h-64 md:h-80 rounded-xl overflow-hidden mb-4 shadow-lg">
                                 <img
                                     src={publicNews[0].image ? `/storage/${publicNews[0].image}` : "https://plus.unsplash.com/premium_photo-1661962692047-92900e3182b2?q=80&w=2070&auto=format&fit=crop"}
@@ -320,7 +320,7 @@ export default function LandingPage() {
                         {/* Recent News List (Right) */}
                         <div className="md:w-1/2 flex flex-col gap-4">
                             {publicNews.slice(1,4).map((item) => (
-                                <div key={item.id} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100 group">
+                                <div key={item.id} onClick={() => navigate(`/news/${item.id}`)} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition cursor-pointer border border-gray-100 group">
                                     <div className="w-24 h-24 shrink-0 rounded-lg overflow-hidden">
                                         <img
                                             src={item.image ? `/storage/${item.image}` : "https://images.unsplash.com/photo-1577896335477-1636d919864?q=80&w=200&auto=format&fit=crop"}
