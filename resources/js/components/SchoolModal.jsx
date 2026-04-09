@@ -16,17 +16,11 @@ export default function SchoolModal({ school, onClose }){
 
                 <div className="grid grid-cols-1 md:grid-cols-2">
                     <div className="h-64 md:h-full bg-gray-200 relative">
-                        {school.photo ? (
                             <img
-                                src={`/storage/${school.photo}`}
+                                src={school.photo ? `/storage/${school.photo}` : "/assets/images/school.png"}
                                 alt={school.name}
                                 className="w-full h-full object-cover"
                             />
-                        ) : (
-                            <div className="flex items-center justify-center h-full text-gray-400">
-                                <span className="text-4xl">🏫</span>
-                            </div>
-                        )}
 
                         <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-4 text-white">
                             <span className="bg-[#FFC107] text-[#0B2235] text-xs font-bold px-2 py-1 rounded">

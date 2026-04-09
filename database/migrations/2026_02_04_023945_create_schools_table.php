@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('student_2023')->default(0);
             $table->integer('student_2024')->default(0);
             $table->integer('student_2025')->default(0);
+            $table->integer('teachers_count')->default(0);
             $table->enum('accreditation', ['A', 'B', 'C', 'Belum Terakreditasi'])->nullable();
             $table->timestamps();
         });

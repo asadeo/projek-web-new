@@ -51,7 +51,7 @@ export default function SchoolForm(){
     const [newSchool, setNewSchool] = useState({
         npsn: '', name: '', level: 'SD', status: 'Negeri',
         address: '', latitude: '', longitude: '', district: '',
-        student_2025: '', accreditation: 'Belum Terakreditasi',
+        student_2025: '', teachers_count: '', accreditation: 'Belum Terakreditasi',
     });
 
     useEffect(() => {
@@ -96,7 +96,7 @@ export default function SchoolForm(){
                     console.error("Gagal ambil data:", error);
                     if (error.response && error.response.status === 404) {
                         alert("Data sekolah tidak ditemukan!");
-                        navigate('/dashboard');
+                        navigate('/admin', { state: { activeMenu: 'dashboard' } });
                     }
                 }
             };
@@ -155,7 +155,7 @@ export default function SchoolForm(){
                 alert('Berhasil menambahkan sekolah!');
             }
 
-            navigate('/dashboard');
+            navigate('/admin', { state: { activeMenu: 'dashboard' } });
 
         } catch (error) {
             console.error("Error Detail:", error.response || error);
@@ -176,7 +176,7 @@ export default function SchoolForm(){
                     <h2 className="text-2xl font-bold text-gray-800">
                         {id ? "Edit Data Sekolah" : "Tambah Sekolah Baru"}
                     </h2>
-                    <button onClick={() => navigate('/dashboard')} className="text-gray-500 hover:text-gray-700">
+                    <button onClick={() => navigate('/admin', { state: { activeMenu: 'dashboard' } })} className="text-gray-500 hover:text-gray-700">
                         &larr; Kembali
                     </button>
                 </div>
@@ -248,6 +248,11 @@ export default function SchoolForm(){
                         <input type="number" name="student_2025" value={newSchool.student_2025} onChange={handleInputChange} required className='w-full border p-2 rounded focus:ring-2 focus:ring-blue-500' placeholder='Contoh: 100'/>
                     </div>
 
+                    <div>
+                        <label className='block text-sm font-medium text-gray-700 mb-1'>Jumlah Guru</label>
+                        <input type="number" name="teachers_count" value={newSchool.teachers_count || ''} onChange={handleInputChange} className='w-full border p-2 rounded bg-gray-50 focus:ring-2 focus:ring-blue-500' placeholder="Contoh: 15"/>
+                    </div>
+
                     <div className='col-span-1 md:col-span-2 mb-4'>
                         <label className='block text-sm font-medium text-gray-700 mb-1'>
                             Pilih Lokasi sekolah (klik pada peta untuk menentukan lokasi)
@@ -293,7 +298,7 @@ export default function SchoolForm(){
                     </div>
 
                     <div className="col-span-1 md:col-span-2 pt-6 border-t flex justify-end gap-3">
-                        <button type="button" onClick={() => navigate('/dashboard')} className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                        <button type="button" onClick={() => navigate('/admin', { state: { activeMenu: 'dashboard' } })} className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
                             Batal
                         </button>
                         <button type="submit" disabled={isSubmitting} className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>

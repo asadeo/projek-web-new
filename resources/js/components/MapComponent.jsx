@@ -180,13 +180,13 @@ export default function MapComponent({ schools, onSelectSchool }){
                     <Marker key={school.id} position={[school.latitude, school.longitude]} icon={markerIcon}>
                         <Popup>
                             <div className='text-center'>
-                                {school.photo && (
-                                    <img 
-                                        src={`/storage/${school.photo}`}
-                                        alt={school.name}
-                                        className='w-full h-24 object-cover rounded mb-2'
-                                    />
-                                )}
+                                
+                                <img 
+                                    src={school.photo ? `/storage/${school.photo}` : "/assets/images/school.png"}
+                                    alt={school.name}
+                                    className='w-full h-24 object-cover rounded mb-2'
+                                />
+                                
                                 <b className='text-sm'>{school.name}</b><br/>
                                 <span className='text-xs text-gray-600'>{school.level} - {school.status}</span><br/>
 

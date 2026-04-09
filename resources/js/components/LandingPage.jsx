@@ -81,6 +81,10 @@ export default function LandingPage() {
         return total + (Number(school.student_2025) || 0);   
     }, 0);
 
+    const totalGuru = filteredSchools.reduce((total, school) => {
+        return total + (Number(school.teachers_count) || 0);
+    }, 0);
+
     return (
         <div className='min-h-screen bg-gray-50 flex flex-col'>
             <nav className="bg-linear-to-b from-[#20639B] from-50% to-[#0B2235] to-100% shadow-md z-10 relative">
@@ -160,7 +164,7 @@ export default function LandingPage() {
                             </svg>
                         </div>
                         <span className="font-bold text-gray-800 text-lg">Guru</span>
-                        <span className="text-[#F59E0B] font-bold text-xl">pending</span>
+                        <span className="text-[#F59E0B] font-bold text-xl">{totalGuru.toLocaleString('id-ID')}</span>
                     </div>
                 </div>
             </div>
@@ -357,7 +361,7 @@ export default function LandingPage() {
 
                     <div className='max-w-4xl mx-auto px-4 mb-8'>
                         <div className='bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4'>
-                            <div className='flex-grow'>
+                            <div className='grow'>
                                 <label className='block text-xs font-bold text-gray-500 mb-1'>Cari Sekolah</label>
                                 <div className='relative'>
                                     <span className='absolute left-3 top-2.5 text-gray-400'>
@@ -423,7 +427,7 @@ export default function LandingPage() {
                     </div>
 
                     {/* Komponen Peta */}
-                    <div className="w-full h-[500px] relative z-0 p-4 mb-10">
+                    <div className="w-full h-125 relative z-0 p-4 mb-10">
                         <MapComponent 
                             schools={filteredSchools} 
                             onSelectSchool={(schools) => setSelectedSchool(schools)}    

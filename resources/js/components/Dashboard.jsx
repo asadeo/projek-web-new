@@ -349,10 +349,8 @@ export default function Dashboard() {
                                     currentItems.map((school) => (
                                         <tr key={school.id} className="hover:bg-blue-50 transition border-b last:border-0">
                                             <td className="p-4 font-mono text-slate-500">{school.npsn}</td>
-                                            <td className='p-4 font-bold text-slate-800 flex items-center gap-3'>{school.photo ? (
-                                                <img src={`/storage/${school.photo}`} className='w-10 h-10 rounded-md object-cover border' alt='foto'/>):(
-                                                <div className='w-10 h-10 rounded-md bg-gray-100 border flex items-center justify-center text-gray-400 text-lg'>🏫</div>
-                                                )}
+                                            <td className='p-4 font-bold text-slate-800 flex items-center gap-3'>
+                                                <img src={school.photo ? `/storage/${school.photo}` : "/assets/images/school.png"} className='w-10 h-10 rounded-md object-cover border' alt='foto'/>
                                                 <span>{school.name}</span>
                                             </td>
                                             <td className="p-4">{school.district}</td>

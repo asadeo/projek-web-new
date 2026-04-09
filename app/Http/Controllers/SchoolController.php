@@ -44,7 +44,7 @@ class SchoolController extends Controller
         ]);
 
         if ($request->hasFile('photo')){
-            $path = $request->file('photo')->store('public/school_photos');
+            $path = $request->file('photo')->store('schools', 'public');
             $validated['photo'] = $path;
         }
 
