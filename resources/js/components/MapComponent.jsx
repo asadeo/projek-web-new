@@ -97,7 +97,7 @@ export default function MapComponent({ schools, onSelectSchool }){
     }, []);
 
     const geoJsonStyle = {
-        color: '#0B2235',
+        color: '#FF5722',
         weight: 2,
         opacity: 0.6,
         fillColor: '#FFC107',
@@ -140,8 +140,8 @@ export default function MapComponent({ schools, onSelectSchool }){
 
             <MapContainer center={position} zoom={11} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
                 <TileLayer 
-                    attribution='&copy; <a href="https://www.openstreetmap.com/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+                    url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                 />
 
                 {geoData && (
