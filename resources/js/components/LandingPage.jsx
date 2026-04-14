@@ -99,6 +99,17 @@ export default function LandingPage() {
                                 <span className="block font-medium text-xs text-slate-500">Peta Pendidikan Daerah</span>
                             </div>
                         </div>
+                        <div className="flex gap-3">
+                            <button onClick={() => navigate('/sekolah')} className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                                Direktori Sekolah
+                            </button>
+                            <button onClick={() => navigate('/sekolah')} className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                                Direktori Sekolah
+                            </button>
+                            <button onClick={() => navigate('/sekolah')} className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                                Direktori Sekolah
+                            </button>
+                        </div>
                     </div>
                 </div>
             </nav>

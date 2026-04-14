@@ -8,6 +8,7 @@ import SchoolForm from './components/SchoolForm';
 import LandingPage from './components/LandingPage';
 import NewsForm from './components/NewsForm';
 import NewsDetail from './components/NewsDetail';
+import SchoolDirectory from './components/SchoolDirectory';
 
 function App() {
     const token = localStorage.getItem('ACCESS_TOKEN');
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/" element={<LandingPage/>} />
                 
                 <Route path="/login" element={<Login />} />
+                <Route path="/sekolah" element={<SchoolDirectory />}/>
                 <Route 
                     path="/schools/create" 
                     element={token ? <SchoolForm /> : <Navigate to="/login" />}
