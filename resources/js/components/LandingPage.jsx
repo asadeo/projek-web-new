@@ -191,7 +191,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* FILTER */}
-                <div className="bg-white p-4 rounded-2xl shadow-md border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 items-center relative z-20">
+                <div className="bg-white p-4 rounded-2xl shadow-md border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 items-center relative z-20 ml-10 mr-10">
                     <div className="relative w-full md:flex-1">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -232,7 +232,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* MAP COMPONENT */}
-                <div className="w-full h-150 bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden relative z-10">
+                <div className="w-335 h-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden relative z-10 ml-8">
                     <MapComponent schools={filteredSchools} onSelectSchool={setSelectedSchool} />
                 </div>
             </section>
@@ -312,7 +312,7 @@ export default function LandingPage() {
                         <div className="lg:col-span-2">
                             <div className="flex items-center gap-3 mb-6">
                                 <img
-                                    src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lambang_Kabupaten_Pati.png/486px-Lambang_Kabupaten_Pati.png"}
+                                    src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "/assets/images/logoDisdikbud.png"}
                                     alt="Logo"
                                     className="h-12 w-auto brightness-0 invert"
                                 />
