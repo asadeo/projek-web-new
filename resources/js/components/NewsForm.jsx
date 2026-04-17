@@ -65,7 +65,7 @@ export default function NewsForm() {
         data.append('title', formData.title);
         data.append('content', formData.content);
         data.append('status', formData.status);
-        if (formData.image) {
+        if (formData.image instanceof File) {
             data.append('image', formData.image);
         }
         
@@ -152,7 +152,7 @@ export default function NewsForm() {
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Foto Berita</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Foto Berita (Ukuran foto tidak boleh melebihi 2MB)</label>
                         <input
                             type="file"
                             accept="image/*"

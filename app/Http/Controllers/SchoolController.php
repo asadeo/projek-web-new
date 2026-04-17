@@ -12,13 +12,6 @@ class SchoolController extends Controller
     {
         $schools = School::all();
 
-        if ($schools->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No schools found'
-            ], 404);
-        }
-
         return response()->json([
             'status' => 'success',
             'schools' => $schools

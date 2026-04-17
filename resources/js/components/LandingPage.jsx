@@ -94,21 +94,21 @@ export default function LandingPage() {
                                 alt="Logo Disdikbud Pati"
                                 className="h-10 w-auto drop-shadow-md"
                             />
-                            <div className="hidden md:block leading-tight">
+                            <a href="/" className="hidden md:block leading-tight">
                                 <span className="block font-bold text-lg text-slate-800">Disdikbud Pati</span>
                                 <span className="block font-medium text-xs text-slate-500">Peta Pendidikan Daerah</span>
-                            </div>
+                            </a>
                         </div>
                         <div className="flex gap-3">
-                            <button onClick={() => navigate('/sekolah')} className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                            <a href="/sekolah" className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
                                 Direktori Sekolah
-                            </button>
-                            <button onClick={() => navigate('/sekolah')} className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
-                                Direktori Sekolah
-                            </button>
-                            <button onClick={() => navigate('/sekolah')} className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
-                                Direktori Sekolah
-                            </button>
+                            </a>
+                            <a href="/berita" className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                                Berita
+                            </a>
+                            <a href="#" className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                                Map
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -118,7 +118,7 @@ export default function LandingPage() {
             <header className="relative pt-32 pb-40 lg:pt-48 lg:pb-56 overflow-hidden">
                 <div className="absolute inset-0">
                     <img 
-                        src="/assets/images/Image_Banner.jpeg"
+                        src="/assets/images/banner_new.webp"
                         alt="Background Banner"
                         className="w-full h-full object-cover object-center filter brightness-50"
                         onError={(e) => {e.target.src = "https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop"}}
@@ -232,7 +232,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* MAP COMPONENT */}
-                <div className="w-335 h-full bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden relative z-10 ml-8">
+                <div className="w-full md:max-w-6xl lg:max-w-7xl mx-auto h-150 bg-white m-auto rounded-3xl shadow-xl border border-slate-200 overflow-hidden relative z-10">
                     <MapComponent schools={filteredSchools} onSelectSchool={setSelectedSchool} />
                 </div>
             </section>

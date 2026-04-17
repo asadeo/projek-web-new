@@ -15,13 +15,6 @@ class NewsController extends Controller
     public function index()
     {
         $news = News::latest()->get();
-        
-        if ($news->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Belum ada berita yang diterbitkan'
-            ], 404);
-        }
 
         return response()->json([
             'status' => 'success',
