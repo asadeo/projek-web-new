@@ -184,12 +184,12 @@ export default function Dashboard() {
                     <button onClick={() => setActiveMenu('news')} className={`w-full text-left py-2.5 px-4 rounded transition ${activeMenu === 'news' ? 'bg-[#FFC107]/10 text-[#FFC107] font-semibold' : 'hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107]'}`}>
                         Konten Website
                     </button>
-                    <button href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">    
+                    {/* <button href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">    
                         Layanan Publik
                     </button>
                     <button href="#" className="block py-2.5 px-4 rounded hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107] transition">
                         Data
-                    </button>
+                    </button> */}
                     <button onClick={() => setActiveMenu('settings')} className={`w-full text-left py-2.5 px-4 rounded transition ${activeMenu === 'settings' ? 'bg-[#FFC107]/10 text-[#FFC107] font-semibold' : 'hover:bg-[#FFC107]/10 text-white hover:text-[#FFC107]'}`}>
                         Pengaturan
                     </button>

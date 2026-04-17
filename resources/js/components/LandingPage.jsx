@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import MapComponent from './MapComponent';
 import SchoolModal from './SchoolModal';
 
@@ -13,6 +13,7 @@ export default function LandingPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterLevel, setFilterLevel] = useState('');
     const [filterStatus, setFilterStatus] = useState('');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const [settings, setSettings] = useState({
         siteName: 'Dinas Pendidikan dan Kebudayaan Kabupaten Pati',
@@ -88,27 +89,58 @@ export default function LandingPage() {
             <nav className="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
-                        <div className="flex items-center gap-3">
+                        <Link to="/" className="flex items-center gap-3 group cursor-pointer">
                             <img
                                 src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "/assets/images/logoDisdikbud.png"}
                                 alt="Logo Disdikbud Pati"
-                                className="h-10 w-auto drop-shadow-md"
+                                className="h-10 w-auto drop-shadow-md group-hover:scale-105 transition-transform"
                             />
-                            <a href="/" className="hidden md:block leading-tight">
-                                <span className="block font-bold text-lg text-slate-800">Disdikbud Pati</span>
+                            <div className="hidden md:block leading-tight">
+                                <span className="block font-bold text-lg text-slate-800 group-hover:text-amber-500 transition-colors">Disdikbud Pati</span>
                                 <span className="block font-medium text-xs text-slate-500">Peta Pendidikan Daerah</span>
-                            </a>
-                        </div>
-                        <div className="flex gap-3">
-                            <a href="/sekolah" className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                            </div>
+                        </Link>
+                        <div className="hidden md:flex items-center gap-10">
+                            <Link to="/" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
+                                Beranda
+                            </Link>
+                            <Link to="/sekolah" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
                                 Direktori Sekolah
-                            </a>
-                            <a href="/berita" className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
+                            </Link>
+                            <Link to="/berita" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
                                 Berita
-                            </a>
-                            <a href="#" className="px-5 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-lg transition hover:bg-slate-50 border border-slate-200">
-                                Map
-                            </a>
+                            </Link>
+                        </div>
+
+                        {/* Mobile Toggle */}
+                        <div className="md:hidden flex items-center">
+                            <button 
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                aria-label="Toggle Menu"
+                                className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {isMobileMenuOpen ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> 
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /> 
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className={`md:hidden absolute w-full bg-white border-t border-slate-100 shadow-xl transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'opacity-100 visible top-20' : 'opacity-0 invisible -top-10 pointer-events-none'}`}>
+                            <div className="flex flex-col px-6 py-4 gap-2">
+                                <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
+                                    Beranda
+                                </Link>
+                                <Link to="/sekolah" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
+                                    Direktori Sekolah
+                                </Link>
+                                <Link to="/berita" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
+                                    Portal Berita
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,7 +157,6 @@ export default function LandingPage() {
                     />
                     <div className="absolute inset-0 bg-linear-to-b from-slate-900/70 via-slate-900/50 to-slate-900/90"></div>
                 </div>
-
                 <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
                     <span className="inline-block py-1 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold tracking-widest uppercase mb-6 backdrop-blur-sm">
                         Sistem Informasi Geografis
@@ -139,6 +170,7 @@ export default function LandingPage() {
                 </div>
             </header>
 
+            {/* Status Section */}
             <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 mb-16">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="bg-white/90 backdrop-blur-xl p-8 rounded-2xl shadow-xl border border-white/40 transform transition hover:-translate-y-1">

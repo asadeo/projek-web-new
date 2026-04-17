@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function SchoolDirectory() {
     const [schools, setSchools] = useState([]);
@@ -8,6 +8,16 @@ export default function SchoolDirectory() {
     const [filterLevel, setFilterLevel] = useState('');
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const [settings, setSettings] = useState({
+        siteName: 'Dinas Pendidikan dan Kebudayaan Kabupaten Pati',
+        welcomeText: 'Dinas Pendidikan dan Kebudayaan (Disdikbud) Kabupaten Pati adalah organisasi perangkat daerah yang bertanggung jawab atas Sekolah dan Guru di Kabupaten Pati, Jawa Tengah.',
+        email: 'disdikbud@patikab.go.id',
+        phone: '(0295) 381456',
+        address: 'Jl. P. Sudirman No. 1, Pati Lor, Kec. Pati, Kabupaten Pati, Jawa Tengah 59111',
+        siteLogo: ''
+    })
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -18,6 +28,14 @@ export default function SchoolDirectory() {
             })
             .catch(err => console.error(err))
             .finally(() => setLoading(false));
+
+        axios.get('/api/settings')
+            .then(res => {
+                if (res.data && res.data.data){
+                    setSettings(prev => ({...prev, ...res.data.data}));
+                }
+            })
+            .catch(err => console.error("Gagal memuat data:", err));
     }, []);
 
     const filteredSchools = schools.filter(school => {
@@ -27,20 +45,70 @@ export default function SchoolDirectory() {
     })
 
     return (
-        <div>
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-amber-400 selection:text-slate-900">
+            {/* NAVBAR */}
+            <nav className="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-20">
+                        <Link to="/" className="flex items-center gap-3 group cursor-pointer">
+                            <img
+                                src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "/assets/images/logoDisdikbud.png"}
+                                alt="Logo Disdikbud Pati"
+                                className="h-10 w-auto drop-shadow-md group-hover:scale-105 transition-transform"
+                            />
+                            <div className="hidden md:block leading-tight">
+                                <span className="block font-bold text-lg text-slate-800 group-hover:text-amber-500 transition-colors">Disdikbud Pati</span>
+                                <span className="block font-medium text-xs text-slate-500">Peta Pendidikan Daerah</span>
+                            </div>
+                        </Link>
+                        <div className="hidden md:flex items-center gap-10">
+                            <Link to="/" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
+                                Beranda
+                            </Link>
+                            <Link to="/sekolah" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
+                                Direktori Sekolah
+                            </Link>
+                            <Link to="/berita" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
+                                Berita
+                            </Link>
+                        </div>
 
-            {/* Navbar */}
-            <nav className="bg-white shadow-sm sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                    <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-                        <span className="text-2xl font-black text-slate-800">←</span>
-                        <span className="font-bold text-slate-800">Kembali ke Beranda</span>
+                        {/* Mobile Toggle */}
+                        <div className="md:hidden flex items-center">
+                            <button 
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                aria-label="Toggle Menu"
+                                className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    {isMobileMenuOpen ? (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> 
+                                    ) : (
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /> 
+                                    )}
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div className={`md:hidden absolute w-full bg-white border-t border-slate-100 shadow-xl transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'opacity-100 visible top-20' : 'opacity-0 invisible -top-10 pointer-events-none'}`}>
+                            <div className="flex flex-col px-6 py-4 gap-2">
+                                <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
+                                    Beranda
+                                </Link>
+                                <Link to="/sekolah" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
+                                    Direktori Sekolah
+                                </Link>
+                                <Link to="/berita" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
+                                    Portal Berita
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </nav>
 
             {/* Header */}
-            <div className="bg-slate-900 text-white py-16">
+            <div className="bg-slate-900 text-white py-32">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-3xl md:text-5xl font-bold mb-4">Direktori <span className="text-amber-400">Pendidikan</span></h1>
                     <p className="text-slate-300 max-w-2xl mx-auto text-lg">
@@ -120,6 +188,20 @@ export default function SchoolDirectory() {
                     <div className="text-center py-20 text-slate-500 font-medium">Tidak ada sekolah yang cocok dengan pencarianmu.</div>
                 )}
             </div>
+
+            {/* FOOTER */}
+            <footer className="bg-slate-950 pb-10 border-t-4 border-amber-500">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="border-t border-slate-800 pt-8 text-center md:flex justify-between items-center">
+                        <p className="text-sm text-slate-500 mb-4 md:mb-0">
+                            © {new Date().getFullYear()} {settings.siteName}. Hak Cipta Dilindungi.
+                        </p>
+                        <div className="flex justify-center gap-4 text-slate-500 text-sm font-medium">
+                            <span>Sistem Informasi Geografis v1.0</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }
