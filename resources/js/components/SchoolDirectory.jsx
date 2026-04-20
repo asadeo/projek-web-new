@@ -47,64 +47,59 @@ export default function SchoolDirectory() {
     return (
         <div className="min-h-screen bg-slate-50 font-sans selection:bg-amber-400 selection:text-slate-900">
             {/* NAVBAR */}
-            <nav className="fixed w-full bg-white/90 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
+            <nav className="bg-white shadow-sm z-50 shrink-0 border-b border-slate-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
-                        <Link to="/" className="flex items-center gap-3 group cursor-pointer">
-                            <img
-                                src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "/assets/images/logoDisdikbud.png"}
-                                alt="Logo Disdikbud Pati"
-                                className="h-10 w-auto drop-shadow-md group-hover:scale-105 transition-transform"
+                        
+                        {/* Logo */}
+                        <Link to="/" className="flex items-center gap-3 group">
+                            <img 
+                                src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lambang_Kabupaten_Pati.png/486px-Lambang_Kabupaten_Pati.png"} 
+                                alt="Logo" 
+                                className="h-10 w-auto group-hover:scale-105 transition-transform" 
                             />
-                            <div className="hidden md:block leading-tight">
-                                <span className="block font-bold text-lg text-slate-800 group-hover:text-amber-500 transition-colors">Disdikbud Pati</span>
-                                <span className="block font-medium text-xs text-slate-500">Peta Pendidikan Daerah</span>
+                            <div className="hidden sm:block leading-tight">
+                                <span className="block font-bold text-slate-800 text-lg group-hover:text-amber-500 transition-colors">Disdikbud Pati</span>
+                                <span className="block text-xs text-slate-500 font-medium">Peta Pendidikan Daerah</span>
                             </div>
                         </Link>
-                        <div className="hidden md:flex items-center gap-10">
-                            <Link to="/" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
-                                Beranda
+
+                        {/* Navigasi Desktop */}
+                        <div className="hidden md:flex items-center gap-8">
+                            <Link to="/" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">Beranda</Link>
+                            <Link to="/peta" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
+                                Peta GIS
                             </Link>
-                            <Link to="/sekolah" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
-                                Direktori Sekolah
-                            </Link>
-                            <Link to="/berita" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">
-                                Berita
-                            </Link>
+                            <Link to="/sekolah" className="text-sm font-bold text-amber-500 transition-colors relative">Direktori Sekolah<span className="absolute -bottom-1 left-0 w-full h-0.5 bg-amber-500"></span></Link>
+                            <Link to="/berita" className="text-sm font-bold text-slate-600 hover:text-amber-500 transition-colors">Berita</Link>
                         </div>
 
                         {/* Mobile Toggle */}
-                        <div className="md:hidden flex items-center">
-                            <button 
-                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                aria-label="Toggle Menu"
-                                className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none transition-colors"
-                            >
+                        <div className="md:hidden">
+                            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 rounded-lg text-slate-600">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     {isMobileMenuOpen ? (
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /> 
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                     ) : (
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /> 
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                                     )}
                                 </svg>
                             </button>
                         </div>
-
-                        <div className={`md:hidden absolute w-full bg-white border-t border-slate-100 shadow-xl transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'opacity-100 visible top-20' : 'opacity-0 invisible -top-10 pointer-events-none'}`}>
-                            <div className="flex flex-col px-6 py-4 gap-2">
-                                <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
-                                    Beranda
-                                </Link>
-                                <Link to="/sekolah" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
-                                    Direktori Sekolah
-                                </Link>
-                                <Link to="/berita" onClick={() => setIsMobileMenuOpen(false)} className="font-bold text-slate-700 hover:text-amber-500 border-b border-slate-50 pb-2">
-                                    Portal Berita
-                                </Link>
-                            </div>
-                        </div>
                     </div>
                 </div>
+
+                {/* Mobile Menu */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden bg-white border-t border-slate-100 shadow-xl absolute w-full z-50">
+                        <div className="flex flex-col px-6 py-4 gap-4 font-bold text-slate-700">
+                            <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>Beranda</Link>
+                            <Link to="/peta" onClick={() => setIsMobileMenuOpen(false)} className="text-amber-500">Peta GIS</Link>
+                            <Link to="/sekolah" onClick={() => setIsMobileMenuOpen(false)}>Direktori</Link>
+                            <Link to="/berita" onClick={() => setIsMobileMenuOpen(false)}>Berita</Link>
+                        </div>
+                    </div>
+                )}
             </nav>
 
             {/* Header */}

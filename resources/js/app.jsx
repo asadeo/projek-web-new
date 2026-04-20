@@ -10,6 +10,7 @@ import NewsForm from './components/NewsForm';
 import NewsDetail from './components/NewsDetail';
 import SchoolDirectory from './components/SchoolDirectory';
 import NewsDirectory from './components/NewsDirectory';
+import MapPage from './components/MapPage';
 
 function App() {
     const token = localStorage.getItem('ACCESS_TOKEN');
@@ -22,6 +23,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/sekolah" element={<SchoolDirectory />}/>
                 <Route path="/berita" element={<NewsDirectory />}/>
+                <Route path="/peta" element={<MapPage />}/>
                 <Route 
                     path="/schools/create" 
                     element={token ? <SchoolForm /> : <Navigate to="/login" />}
