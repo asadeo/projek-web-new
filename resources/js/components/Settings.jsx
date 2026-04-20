@@ -56,14 +56,16 @@ export default function Settings() {
 
         try {
             const token = localStorage.getItem('ACCESS_TOKEN');
-
             const formData = new FormData();
+
             Object.keys(settings).forEach(key => {
-                formData.append(key, settings[key] || '');
+                if (key != 'siteLogo') {
+                    formData.append(key, settings[key] || '');
+                }
             });
 
             if (logoFile) {
-                formData.append('logo', logoFile);
+                formData.append('siteLogo', logoFile);
             }
 
             await axios.post('/api/settings', formData, {
@@ -83,8 +85,6 @@ export default function Settings() {
             });
 
             fetchSettings();
-            setLogoFile(null);
-
         } catch (error) {
             console.error("Gagal menyimpan:", error);
             Swal.fire({

@@ -82,6 +82,7 @@ function LocateControl({ userPosition, setUserPosition }) {
 
 export default function MapComponent({ schools, onSelectSchool }){
     const position = [-6.7462, 111.0278];
+    const patiBounds = [[-7.1500, 110.8000],[-6.3500, 111.3500]];
 
     const [geoData, setGeoData] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
@@ -137,7 +138,7 @@ export default function MapComponent({ schools, onSelectSchool }){
                 </div>
             )}
 
-            <MapContainer center={position} zoom={11} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
+            <MapContainer center={position} zoom={11} minZoom={10} maxBounds={patiBounds} maxBoundsViscosity={1} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
                 <TileLayer 
                     attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
                     url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

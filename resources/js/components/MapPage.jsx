@@ -153,6 +153,20 @@ export default function MapPage() {
             {selectedSchool && (
                 <SchoolModal school={selectedSchool} onClose={() => setSelectedSchool(null)} />
             )}
+
+            {/* FOOTER */}
+            <footer className="bg-slate-950 pb-10 border-t-4 border-amber-500">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="border-t border-slate-800 pt-8 text-center md:flex justify-between items-center">
+                        <p className="text-sm text-slate-500 mb-4 md:mb-0">
+                            © {new Date().getFullYear()} {settings.siteName}. Hak Cipta Dilindungi.
+                        </p>
+                        <div className="flex justify-center gap-4 text-slate-500 text-sm font-medium">
+                            <span>Sistem Informasi Geografis v1.0</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }

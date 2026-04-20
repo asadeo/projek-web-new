@@ -24,15 +24,7 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->except('logo', 'siteLogo');
-
-        if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('settings', 'public');
-            Setting::updateOrCreate(
-                ['key' => 'siteLogo'],
-                ['value' => $path]
-            );
-        }
+        $data = $request->except('siteLogo');
         
         foreach ($data as $key => $value) {
             if ($value != null){
@@ -41,6 +33,14 @@ class SettingController extends Controller
                     ['value' => $value]
                 );
             }
+        }
+
+        if ($request->hasFile('siteLogo')) {
+            $path = $request->file('siteLogo')->store('settings', 'public');
+            Setting::updateOrCreate(
+                ['key' => 'siteLogo'],
+                ['value' => $path]
+            );
         }
 
         return response()->json([

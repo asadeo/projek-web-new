@@ -98,7 +98,7 @@ export default function LandingPage() {
                                 className="h-10 w-auto group-hover:scale-105 transition-transform" 
                             />
                             <div className="hidden sm:block leading-tight">
-                                <span className="block font-bold text-slate-800 text-lg group-hover:text-amber-500 transition-colors">Disdikbud Pati</span>
+                                <span className="block font-bold text-slate-800 text-lg group-hover:text-amber-500 transition-colors">{settings.siteName}</span>
                                 <span className="block text-xs text-slate-500 font-medium">Peta Pendidikan Daerah</span>
                             </div>
                         </Link>
@@ -338,10 +338,10 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
                         <div className="lg:col-span-2">
                             <div className="flex items-center gap-3 mb-6">
-                                <img
-                                    src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "/assets/images/logoDisdikbud.png"}
-                                    alt="Logo"
-                                    className="h-12 w-auto brightness-0 invert"
+                                <img 
+                                    src={settings.siteLogo ? `/storage/${settings.siteLogo}` : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Lambang_Kabupaten_Pati.png/486px-Lambang_Kabupaten_Pati.png"} 
+                                    alt="Logo" 
+                                    className="h-10 w-auto group-hover:scale-105 transition-transform" 
                                 />
                                 <h3 className="text-2xl font-bold text-white">{settings.siteName}</h3>
                             </div>
