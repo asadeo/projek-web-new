@@ -84,6 +84,7 @@ export default function MapComponent({ schools, onSelectSchool }){
     const position = [-6.7462, 111.0278];
     const patiBounds = [[-7.1500, 110.8000],[-6.3500, 111.3500]];
 
+    const [map, setMap] = useState(null);
     const [geoData, setGeoData] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
 
@@ -97,26 +98,44 @@ export default function MapComponent({ schools, onSelectSchool }){
     }, []);
 
     const geoJsonStyle = {
-        color: '#FF5722',
-        weight: 2,
-        opacity: 0.6,
-        fillColor: '#FFC107',
-        fillOpacity: 0.05
+            color: '#ffffff',
+            weight: 2,
+            opacity: 1,
+            fillColor: '#3b82f6',
+            dashArray: '3',
+            fillOpacity: 0.15
     };
 
     const onEachFeature = (feature, layer) => {
         const namaKecamatan = feature.properties.district || feature.properties.WADMKC; 
 
         if(namaKecamatan) {
-            layer.bindTooltip(namaKecamatan, { permanent: false, direction: 'center' });
+                layer.bindTooltip(`<div class="font-bold text-slate-800 uppercase">${namaKecamatan}</div>`, {
+                sticky: true,
+                className: "bg-white/90 backdrop-blur border-none shadow-md rounded px-2 py-1"
+            });
         }
 
         layer.on({
+            mouseover: (e) => {
+                const targetLayer = e.target;
+                targetLayer.setStyle({
+                    weight: 3,
+                    color: '#f59e0b', 
+                    dashArray: '',
+                    fillOpacity: 0.4
+                });
+                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                    targetLayer.bringToFront();
+                }
+            },
+            mouseout: (e) => {
+                e.target.setStyle(geoJsonStyle);
+            },
             click: (e) => {
                 const map = e.target._map;
                 map.fitBounds(e.target.getBounds());
-
-                setSelectedDistrict(namaKecamatan);    
+                setSelectedDistrict(namaKecamatan);
             }
         });
     };
@@ -130,7 +149,12 @@ export default function MapComponent({ schools, onSelectSchool }){
                 <div className="absolute top-2 left-12 z-1000 bg-white p-2 rounded shadow text-sm">
                     Menampilkan sekolah di: <b>{selectedDistrict}</b>
                     <button 
-                        onClick={() => setSelectedDistrict(null)}
+                        onClick={() => {
+                            setSelectedDistrict(null);
+                            if (map) {
+                                map.flyTo(position, 11);
+                            }
+                        }}
                         className="ml-3 text-red-500 hover:text-red-700 underline"
                     >
                         Reset / Tampilkan Semua
@@ -138,7 +162,7 @@ export default function MapComponent({ schools, onSelectSchool }){
                 </div>
             )}
 
-            <MapContainer center={position} zoom={11} minZoom={10} maxBounds={patiBounds} maxBoundsViscosity={1} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
+            <MapContainer ref={setMap} center={position} zoom={11} minZoom={10} maxBounds={patiBounds} maxBoundsViscosity={1} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
                 <TileLayer 
                     attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
                     url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"

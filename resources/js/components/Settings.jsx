@@ -71,7 +71,6 @@ export default function Settings() {
             await axios.post('/api/settings', formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
                     'Accept': 'application/json'
                 }
             });

@@ -372,7 +372,7 @@ export default function LandingPage() {
                             <h4 className="text-lg font-bold text-white mb-6">Lokasi Disdikbud</h4>
                             <div className="h-40 w-full rounded-xl overflow-hidden border border-slate-800 relative group">
                                 <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.575836934273!2d111.0360877!3d-6.7554904!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e70d24e43b6791b%3A0xc3b5ed7f4d38561f!2sDinas%20Pendidikan%20dan%20Kebudayaan%20Kabupaten%20Pati!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15848.564124041752!2d111.01778393524171!3d-6.7526497582979275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e70d2378cca1721%3A0x48ef28f2b722f538!2sDinas%20Pendidikan%20dan%20Kebudayaan%20Kabupaten%20Pati!5e0!3m2!1sid!2sid!4v1772088694962!5m2!1sid!2sid"
                                     width="100%"
                                     height="100%"
                                     style={{ border: 0 }}
