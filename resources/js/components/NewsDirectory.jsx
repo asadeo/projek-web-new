@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-// import { Helmet } from 'react-helmet-async';
 
 export default function NewsDirectory() {
     const [news, setNews] = useState([]);
@@ -45,10 +44,6 @@ export default function NewsDirectory() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans selection:bg-amber-400 selection:text-slate-900">
-            {/* <Helmet>
-                <title>Kumpulan Berita - Disdikbud Kabupaten Pati</title>
-                <meta name="description" content="Kumpulan berita, informasi, dan pengumuman terbaru dari Dinas Pendidikan dan Kebudayaan Kabupaten Pati." />
-            </Helmet> */}
 
             {/* NAVBAR */}
             <nav className="bg-white shadow-sm z-50 shrink-0 border-b border-slate-100">
