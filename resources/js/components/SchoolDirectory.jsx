@@ -4,12 +4,16 @@ import { useNavigate, Link } from "react-router-dom";
 
 export default function SchoolDirectory() {
     const [schools, setSchools] = useState([]);
+    const [filteredSchools, setFilteredSchools] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterLevel, setFilterLevel] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [settings, setSettings] = useState({
         siteName: 'Dinas Pendidikan dan Kebudayaan Kabupaten Pati',
         welcomeText: 'Dinas Pendidikan dan Kebudayaan (Disdikbud) Kabupaten Pati adalah organisasi perangkat daerah yang bertanggung jawab atas Sekolah dan Guru di Kabupaten Pati, Jawa Tengah.',
@@ -38,16 +42,25 @@ export default function SchoolDirectory() {
             .catch(err => console.error("Gagal memuat data:", err));
     }, []);
 
-    const filteredSchools = schools.filter(school => {
-        const matchName = school.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchLevel = filterLevel === '' || school.level === filterLevel;
-        return matchName && matchLevel;
-    })
+    useEffect(() => {
+        let result = schools;
+        if (searchTerm) result = result.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        if (filterLevel) result = result.filter(s => s.level === filterLevel);
+        if (filterStatus) result = result.filter(s => s.status === filterStatus);
+        
+        setFilteredSchools(result);
+        setCurrentPage(1);
+    }, [searchTerm, filterLevel, filterStatus, schools]);
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredSchools.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredSchools.length / itemsPerPage);
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans selection:bg-amber-400 selection:text-slate-900">
             {/* NAVBAR */}
-            <nav className="bg-white shadow-sm z-50 shrink-0 border-b border-slate-100">
+            <nav className="sticky top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         
@@ -114,73 +127,75 @@ export default function SchoolDirectory() {
 
             {/* Search Bar & Filters */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-                <div className="bg-white rounded-xl shadow-lg p-4 flex flex-col md:flex-row gap-4 border border-slate-100">
-                    <input
-                        type="text"
-                        placeholder="Cari nama sekolah..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none"
-                    />
-                    <select
-                        value={filterLevel}
-                        onChange={(e) => setFilterLevel(e.target.value)}
-                        className="md:w-48 px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-400 outline-none font-medium text-slate-700"
-                    >
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4">
+                    <input type="text" placeholder="Cari nama sekolah..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-400 outline-none bg-slate-50" />
+                    <select value={filterLevel} onChange={(e) => setFilterLevel(e.target.value)} className="px-4 py-3 border border-slate-200 rounded-xl outline-none bg-slate-50">
                         <option value="">Semua Jenjang</option>
-                        <option value="SD">Sekolah Dasar (SD)</option>
-                        <option value="SMP">Sekolah Menengah Pertama (SMP)</option>
+                        <option value="SD">SD</option>
+                        <option value="SMP">SMP</option>
+                    </select>
+                    <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="px-4 py-3 border border-slate-200 rounded-xl outline-none bg-slate-50">
+                        <option value="">Semua Status</option>
+                        <option value="Negeri">Negeri</option>
+                        <option value="Swasta">Swasta</option>
                     </select>
                 </div>
             </div>
 
             {/* School List */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {loading ? (
                     <div className="text-center py-20 text-slate-500 font-medium animate-pulse">Memuat data sekolah...</div>
-                ) : filteredSchools.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredSchools.map((school) => (
-                            <div key={school.id} className="bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition overflow-hidden group">
-                                <div className="h-48 bg-slate-200 overflow-hidden relative">
-                                    <img 
-                                        src={school.photo ? `/storage/${school.photo}` : "https://images.unsplash.com/photo-1580582932707-520aed937b7b?q=80&w=800&auto=format&fit=crop"}
-                                        alt={school.name}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                                    />
-                                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur text-slate-800 text-xs font-bold px-2 py-1 rounded shadow-sm">
-                                        Akreditasi {school.accreditation || '-'}
+                ) : currentItems.length > 0 ? (
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-10">
+                            {currentItems.map(school => (
+                                <div key={school.id} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition group">
+                                    <div className="h-40 overflow-hidden bg-slate-100">
+                                        <img src={school.photo ? `/storage/${school.photo}` : "/assets/images/school.png"} alt={school.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                                    </div>
+                                    <div className="p-5">
+                                        <div className="flex gap-2 mb-3">
+                                            <span className="text-xs font-bold px-2 py-1 bg-amber-100 text-amber-700 rounded">{school.level}</span>
+                                            <span className="text-xs font-bold px-2 py-1 bg-blue-100 text-blue-700 rounded">{school.status}</span>
+                                        </div>
+                                        <h3 className="font-bold text-slate-800 text-lg mb-1 truncate" title={school.name}>{school.name}</h3>
+                                        <p className="text-sm text-slate-500 truncate mb-4">{school.district}</p>
+                                        <button onClick={() => navigate('/peta', { state: {targetSchool: school }})} className="w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm font-semibold rounded-lg border border-slate-200 transition">
+                                            Lihat di Peta
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="p-5">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase ${school.level === 'SD' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
-                                            {school.level || '-'}
-                                        </span>
-                                        <span className="text-[10px] font-bold px-2 py-1 rounded uppercase bg-slate-100 text-slate-700">
-                                            {school.status || '-'}
-                                        </span>
-                                    </div>
-                                    <h3 className="text-xl font-bold text-slate-800 mb-1 line-clamp-1">{school.name}</h3>
-                                    <p className="text-slate-500 text-sm mb-4 line-clamp-1 flex items-center gap-1">
-                                        📍 {school.address}
-                                    </p>
-                                    <div className="grid grid-cols-2 gap-2 border-t border-slate-50 pt-4 text-center">
-                                        <div className="bg-slate-50 rounded-lg py-2">
-                                            <span className="block text-xl font-black text-slate-700">{school.student_2025 || 0}</span>
-                                            <span className="text-[10px] text-slate-500 uppercase font-semibold">Siswa</span>
-                                        </div>
-                                        <div className="bg-slate-50 rounded-lg py-2">
-                                            <span className="block text-xl font-black text-slate-700">{school.teachers_count || 0}</span>
-                                            <span className="text-[10px] text-slate-500 uppercase font-semibold">Guru</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            ))}
+                        </div>
+
+                        {/* Pagination UI */}
+                        {totalPages > 1 && (
+                            <div className="flex justify-center items-center gap-4">
+                                <button 
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+                                    disabled={currentPage === 1}
+                                    className="px-4 py-2 rounded-lg font-semibold border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                >
+                                    Sebelumnya
+                                </button>
+                                <span className="text-sm font-medium text-slate-600">
+                                    Halaman <span className="font-bold text-slate-900">{currentPage}</span> dari {totalPages}
+                                </span>
+                                <button 
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+                                    disabled={currentPage === totalPages}
+                                    className="px-4 py-2 rounded-lg font-semibold border border-slate-200 text-slate-600 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                                >
+                                    Selanjutnya
+                                </button>
                             </div>
-                        ))}
-                    </div>
+                        )}
+                    </>
                 ) : (
-                    <div className="text-center py-20 text-slate-500 font-medium">Tidak ada sekolah yang cocok dengan pencarianmu.</div>
+                    <div className="text-center py-20 text-slate-500 font-medium bg-white rounded-2xl border border-dashed border-slate-300">
+                        Tidak ada sekolah yang sesuai dengan pencarian.
+                    </div>
                 )}
             </div>
 

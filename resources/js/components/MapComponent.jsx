@@ -80,7 +80,7 @@ function LocateControl({ userPosition, setUserPosition }) {
     );
 }
 
-export default function MapComponent({ schools, onSelectSchool }){
+export default function MapComponent({ schools, onSelectSchool, targetSchool }){
     const position = [-6.7462, 111.0278];
     const patiBounds = [[-7.1500, 110.8000],[-6.3500, 111.3500]];
 
@@ -89,6 +89,15 @@ export default function MapComponent({ schools, onSelectSchool }){
     const [selectedDistrict, setSelectedDistrict] = useState(null);
 
     const [userPosition, setUserPosition] = useState(null);
+
+    useEffect(() => {
+        if (map && targetSchool && targetSchool.latitude && targetSchool.longitude) {
+            map.flyTo([targetSchool.latitude, targetSchool.longitude], 17, {
+                animate: true,
+                duration: 2 
+            });
+        }
+    }, [map, targetSchool]);
 
     useEffect(() => {
         fetch('/data/batas_kecamatan_pati_kompres.json')

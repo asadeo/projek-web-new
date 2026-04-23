@@ -53,7 +53,7 @@ export default function NewsDetail() {
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-amber-400 selection:text-slate-900">
             {/* NAVBAR */}
-            <nav className="bg-white shadow-sm z-50 shrink-0 border-b border-slate-100">
+            <nav className="sticky top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         

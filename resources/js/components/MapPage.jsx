@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-// import { Helmet } from 'react-helmet-async';
+import { Link, useLocation } from "react-router-dom";
 import MapComponent from "./MapComponent";
 import SchoolModal from "./SchoolModal";
 
@@ -9,6 +8,8 @@ export default function MapPage() {
     const [schools, setSchools] = useState([]);
     const [filteredSchools, setFilteredSchools] = useState([]);
     const [selectedSchool, setSelectedSchool] = useState(null);
+    const location = useLocation();
+    const targetSchool = location.state?.targetSchool || null;
 
     const [searchTerm, setSearchTerm] = useState('');
     const [filterLevel, setFilterLevel] = useState('');
@@ -62,13 +63,10 @@ export default function MapPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50 font-sans overflow-hidden">
-            {/* <Helmet>
-                <title>Peta Interaktif GIS - {settings.siteName}</title>
-            </Helmet> */}
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-amber-400 selection:text-slate-900">
 
             {/* NAVBAR */}
-            <nav className="bg-white shadow-sm z-50 shrink-0 border-b border-slate-100">
+            <nav className="sticky top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         
@@ -147,7 +145,7 @@ export default function MapPage() {
 
             {/* Area Peta */}
             <div className="flex-1 relative z-10 mb-10">
-                <MapComponent schools={filteredSchools} onSelectSchool={setSelectedSchool} />
+                <MapComponent schools={filteredSchools} onSelectSchool={setSelectedSchool} targetSchool={targetSchool}/>
             </div>
 
             {selectedSchool && (

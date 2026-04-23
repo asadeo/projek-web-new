@@ -86,7 +86,7 @@ export default function LandingPage() {
         <div className="min-h-screen bg-slate-50 font-sans selection:bg-amber-400 selection:text-slate-900">
             
             {/* NAVBAR */}
-            <nav className="bg-white shadow-sm z-50 shrink-0 border-b border-slate-100">
+            <nav className="sticky top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 transition-all duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-20">
                         
@@ -302,10 +302,10 @@ export default function LandingPage() {
                             </div>
 
                             {/* BERITA KECIL */}
-                            <div>
+                            <div className="flex flex-col gap-6 justify-between">
                                 {publicNews.slice(1,4).map((item) => (
                                     <div key={item.id} onClick={() => navigate(`/news/${item.id}`)} className="flex gap-4 p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer border border-slate-200 group h-full">
-                                        <div>
+                                        <div className="w-24 h-24 md:w-28 md:h-28 shrink-0 overflow-hidden rounded-xl">
                                             <img 
                                                 src={item.image ? `/storage/${item.image}` : "/assets/images/newspaper.png"}
                                                 alt={item.title}
@@ -316,7 +316,7 @@ export default function LandingPage() {
                                             <h4 className="font-bold text-slate-800 line-clamp-2 group-hover:text-amber-600 transition mb-2 leading-snug">
                                                 {item.title}
                                             </h4>
-                                            <span className="text-xs text-slate-500 font-medium flex items-center">
+                                            <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
                                                 {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
                                             </span>
                                         </div>
