@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, CircleMarker, Circle, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, CircleMarker, Circle, GeoJSON, useMapEvents } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -31,6 +31,15 @@ const redIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
+
+function MapClickHandler({ setActiveRadius }) {
+    useMapEvents({
+        click: () => {
+            setActiveRadius(null);
+        }
+    });
+    return null;
+}
 
 function LocateControl({ userPosition, setUserPosition }) {
     const map = useMap();
@@ -87,6 +96,7 @@ export default function MapComponent({ schools, onSelectSchool, targetSchool }){
     const [map, setMap] = useState(null);
     const [geoData, setGeoData] = useState(null);
     const [selectedDistrict, setSelectedDistrict] = useState(null);
+    const [activeRadius, setActiveRadius] = useState(null);
 
     const [userPosition, setUserPosition] = useState(null);
 
@@ -96,6 +106,8 @@ export default function MapComponent({ schools, onSelectSchool, targetSchool }){
                 animate: true,
                 duration: 2 
             });
+
+            setActiveRadius(targetSchool);
         }
     }, [map, targetSchool]);
 
@@ -153,7 +165,7 @@ export default function MapComponent({ schools, onSelectSchool, targetSchool }){
 
     return (
 
-        <div className="relative">
+        <div className="relative w-full h-full">
             {selectedDistrict && (
                 <div className="absolute top-2 left-12 z-1000 bg-white p-2 rounded shadow text-sm">
                     Menampilkan sekolah di: <b>{selectedDistrict}</b>
@@ -171,11 +183,13 @@ export default function MapComponent({ schools, onSelectSchool, targetSchool }){
                 </div>
             )}
 
-            <MapContainer ref={setMap} center={position} zoom={11} minZoom={10} maxBounds={patiBounds} maxBoundsViscosity={1} style={{ height: "500px", width: "100%", borderRadius: "8px" }}>
+            <MapContainer ref={setMap} center={position} zoom={11} minZoom={10} maxBounds={patiBounds} maxBoundsViscosity={1} style={{ height: "100%", width: "100%", borderRadius: "8px" }}>
                 <TileLayer 
                     attribution="Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
                     url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                 />
+
+                <MapClickHandler setActiveRadius={setActiveRadius} />
 
                 {geoData && (
                     <GeoJSON 
@@ -210,10 +224,9 @@ export default function MapComponent({ schools, onSelectSchool, targetSchool }){
                     }
 
                     return (
-                    <Marker key={school.id} position={[school.latitude, school.longitude]} icon={markerIcon}>
+                    <Marker key={school.id} position={[school.latitude, school.longitude]} icon={markerIcon} eventHandlers={{click: () => setActiveRadius(school)}}>
                         <Popup>
                             <div className='text-center'>
-                                
                                 <img 
                                     src={school.photo ? `/storage/${school.photo}` : "/assets/images/school.png"}
                                     alt={school.name}
@@ -246,6 +259,21 @@ export default function MapComponent({ schools, onSelectSchool, targetSchool }){
                     return null;
                 })}
                 </MarkerClusterGroup>
+
+                {/* Visualisasi radius */}
+                {activeRadius && activeRadius.latitude && activeRadius.longitude && (
+                    <Circle 
+                        center={[activeRadius.latitude, activeRadius.longitude]}
+                        radius={3000}
+                        pathOptions={{
+                            color: '#ef4444',
+                            fillColor: '#fca5a5',
+                            fillOpacity: 0.3,
+                            weight: 2,
+                            dashArray: '8, 8'
+                        }}
+                    />
+                )}
             </MapContainer>
     </div>
     )

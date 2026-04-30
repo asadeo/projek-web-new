@@ -207,60 +207,66 @@ export default function LandingPage() {
             </div>
 
             {/* GIS SECTION */}
-            <section className="py-12 bg-slate-50 relative">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="mb-8 md:flex justify-between items-end">
-                        <div>
-                            <h2 className="text-3xl font-bold text-slate-900 mb-2">Peta Sebaran Sekolah</h2>
-                            <p className="text-slate-500">Jelajahi dan temukan lokasi sekolah di Kabupaten Pati secara presisi.</p>
+            <section className="py-24 bg-white relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-5 pointer-events-none">
+                    <svg className="absolute -top-24 -left-24 w-96 h-96 text-slate-900" fill="currentColor" viewBox="0 0 100 100">
+                        <path d="M20,50 L40,20 L80,30 L90,70 L50,90 Z" />
+                    </svg>
+                    <svg className="absolute bottom-10 right-10 w-64 h-64 text-amber-500" fill="currentColor" viewBox="0 0 100 100">
+                        <path d="M10,40 L30,10 L70,20 L80,80 L40,90 Z" />
+                    </svg>
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="bg-slate-900 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row items-center border border-slate-800">
+                        <div className="p-10 md:p-16 flex-1 text-center md:text-left">
+                            <span className="inline-block py-1 px-3 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-bold tracking-widest uppercase mb-4">
+                                Eksplorasi Interaktif
+                            </span>
+                            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-6 leading-tight">
+                                Jelajahi Peta Pendidikan <br className="hidden md:block" />
+                                <span className="text-amber-400">Kabupaten Pati</span>
+                            </h2>
+                            <p className="text-slate-400 text-lg mb-8 leading-relaxed max-w-xl mx-auto md:mx-0">
+                                Gunakan Sistem Informasi Geografis (GIS) kami untuk mencari lokasi sekolah, melihat radius zonasi, dan mendapatkan rute tercepat secara *real-time*.
+                            </p>
+                            
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                                <button 
+                                    onClick={() => navigate('/peta')}
+                                    className="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl shadow-lg shadow-amber-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                                    Buka Peta GIS Sekarang
+                                </button>
+                                <button 
+                                    onClick={() => navigate('/sekolah')}
+                                    className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2"
+                                >
+                                    Lihat Direktori Sekolah
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="w-full md:w-5/12 h-64 md:h-auto relative bg-slate-800 shrink-0">
+                            <div className="absolute inset-0 bg-linear-to-r from-slate-900 via-transparent to-transparent z-10 hidden md:block"></div>
+                            <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-transparent to-transparent z-10 md:hidden"></div>
+                            
+                            <img 
+                                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop" 
+                                alt="Ilustrasi Peta GIS" 
+                                className="w-full h-full object-cover opacity-80"
+                            />
+                            
+                            {/* Pin Animasi Buatan */}
+                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20">
+                                <div className="relative flex items-center justify-center">
+                                    <div className="absolute w-16 h-16 bg-amber-500/30 rounded-full animate-ping"></div>
+                                    <div className="absolute w-10 h-10 bg-amber-500/40 rounded-full animate-pulse"></div>
+                                    <svg className="relative w-8 h-8 text-amber-500 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {/* FILTER */}
-                <div className="bg-white p-4 rounded-2xl shadow-md border border-slate-100 mb-6 flex flex-col md:flex-row gap-4 items-center relative z-20 ml-10 mr-10">
-                    <div className="relative w-full md:flex-1">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Cari nama sekolah..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-400 outline-none transition bg-slate-50 focus:bg-white text-slate-700"                        
-                        />
-                    </div>
-                    <select
-                        value={filterLevel}
-                        onChange={(e) => setFilterLevel(e.target.value)}
-                        className="w-full md:w-48 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-400 outline-none transition bg-slate-50 focus:bg-white text-slate-700 font-medium"
-                    >
-                        <option value="">Semua Jenjang</option>
-                        <option value="SD">Sekolah Dasar (SD)</option>
-                        <option value="SMP">Sekolah Menegah Pertama (SMP)</option>
-                    </select>
-                    <select
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                        className="w-full md:w-48 px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-400 outline-none transition bg-slate-50 focus:bg-white text-slate-700 font-medium"
-                    >
-                        <option value="">Semua Status</option>
-                        <option value="Negeri">Negeri</option>
-                        <option value="Swasta">Swasta</option>
-                    </select>
-                    <button
-                        onClick={resetFilter}
-                        className="w-full md:w-auto px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl font-semibold transition flex items-center justify-center gap-2"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" ><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                        Reset 
-                    </button>
-                </div>
-
-                {/* MAP COMPONENT */}
-                <div className="w-full md:max-w-6xl lg:max-w-7xl mx-auto h-150 bg-white m-auto rounded-3xl shadow-xl border border-slate-200 overflow-hidden relative z-10">
-                    <MapComponent schools={filteredSchools} onSelectSchool={setSelectedSchool} />
                 </div>
             </section>
 
