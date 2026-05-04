@@ -11,13 +11,15 @@ import NewsDetail from './components/NewsDetail';
 import SchoolDirectory from './components/SchoolDirectory';
 import NewsDirectory from './components/NewsDirectory';
 import MapPage from './components/MapPage';
+import NotFound from './components/NotFound';
 
 function App() {
-    const token = localStorage.getItem('ACCESS_TOKEN');
+    const token = localStorage.getItem('ACCESS_TOKEN'); 
 
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="*" element={<NotFound />} />
                 <Route path="/" element={<LandingPage/>} />
                 
                 <Route path="/login" element={<Login />} />
