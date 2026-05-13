@@ -33,7 +33,7 @@ class SchoolController extends Controller
             'student_2023' => 'nullable|integer|min:0',
             'student_2024' => 'nullable|integer|min:0',
             'student_2025' => 'nullable|integer|min:0',
-            'accreditation' => 'nullable|in:A,B,C,Belum Terakreditasi',
+            'accreditation' => 'nullable|in:A,B,C,Belum Terakreditasi,Tidak Terakreditasi',
         ]);
 
         if ($request->hasFile('photo')){
@@ -72,7 +72,7 @@ class SchoolController extends Controller
             'student_2023' => 'nullable|integer|min:0',
             'student_2024' => 'nullable|integer|min:0',
             'student_2025' => 'nullable|integer|min:0',
-            'accreditation' => 'nullable|in:A,B,C,Belum Terakreditasi',
+            'accreditation' => 'nullable|in:A,B,C,Belum Terakreditasi, Tidak Terakreditasi',
         ]);
 
         if ($request->hasFile('photo')){

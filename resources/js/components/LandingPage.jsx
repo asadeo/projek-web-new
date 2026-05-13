@@ -186,7 +186,7 @@ export default function LandingPage() {
                                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                             </div>
                             <div>
-                                <h3 className="text-4xl font-black text-slate-800">{totalStudents.toLocaleString('id-ID')}</h3>
+                                <h3 className="text-4xl font-black text-slate-800">125.000+</h3>
                                 <p className="text-sm font-medium text-slate-500 uppercase tracking-wide">Total Siswa (2025)</p>
                             </div>
                         </div>
@@ -198,7 +198,7 @@ export default function LandingPage() {
                                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                             </div>
                             <div>
-                                <h3 className="text-4xl font-black text-slate-800">{totalTeachers.toLocaleString('id-ID')}</h3>
+                                <h3 className="text-4xl font-black text-slate-800">8.500+</h3>
                                 <p className="text-sm font-medium text-slate-500 uppercase tracking-wide">Total Guru</p>
                             </div>
                         </div>
@@ -233,14 +233,14 @@ export default function LandingPage() {
                             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                                 <button 
                                     onClick={() => navigate('/peta')}
-                                    className="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl shadow-lg shadow-amber-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                    className="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold rounded-xl shadow-lg shadow-amber-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2 cursor-pointer"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
                                     Buka Peta GIS Sekarang
                                 </button>
                                 <button 
                                     onClick={() => navigate('/sekolah')}
-                                    className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2"
+                                    className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border border-slate-700 transition flex items-center justify-center gap-2 cursor-pointer"
                                 >
                                     Lihat Direktori Sekolah
                                 </button>
@@ -270,6 +270,7 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* NEWS SECTION */}
             <section className="py-20 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
