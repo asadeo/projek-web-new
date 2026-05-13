@@ -176,7 +176,7 @@ export default function SchoolForm(){
                     <h2 className="text-2xl font-bold text-gray-800">
                         {id ? "Edit Data Sekolah" : "Tambah Sekolah Baru"}
                     </h2>
-                    <button onClick={() => navigate('/admin', { state: { activeMenu: 'dashboard' } })} className="text-gray-500 hover:text-gray-700">
+                    <button onClick={() => navigate('/admin', { state: { activeMenu: 'schoolPage' } })} className="text-gray-500 hover:text-gray-700">
                         &larr; Kembali
                     </button>
                 </div>
@@ -298,7 +298,7 @@ export default function SchoolForm(){
                     </div>
 
                     <div className="col-span-1 md:col-span-2 pt-6 border-t flex justify-end gap-3">
-                        <button type="button" onClick={() => navigate('/admin', { state: { activeMenu: 'dashboard' } })} className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
+                        <button type="button" onClick={() => navigate('/admin', { state: { activeMenu: 'schoolPage' } })} className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">
                             Batal
                         </button>
                         <button type="submit" disabled={isSubmitting} className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}>

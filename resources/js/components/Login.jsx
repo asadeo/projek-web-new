@@ -92,7 +92,7 @@ export default function Login() {
                             <button 
                                 type="submit"
                                 disabled={isLoading}
-                                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold text-white bg-[#0B2235] hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0B2235] transition transform ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-0.5'}`}
+                                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-bold cursor-pointer text-white bg-[#0B2235] hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0B2235] transition transform ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-0.5'}`}
                             >
                                 {isLoading ? (
                                     <span className="flex items-center gap-2">

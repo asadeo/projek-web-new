@@ -32,6 +32,36 @@ const redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+const createCustomClusterIcon = (cluster) => {
+    const count = cluster.getChildCount();
+    
+    let colorClass = 'bg-red-500 ring-red-300'; 
+    let sizeClass = 'w-14 h-14 text-xl';
+
+    if (count < 10) {
+        colorClass = 'bg-emerald-500 ring-emerald-300'; 
+        sizeClass = 'w-10 h-10 text-base';
+    } else if (count < 50) {
+        colorClass = 'bg-amber-500 ring-amber-300'; 
+        sizeClass = 'w-12 h-12 text-lg';
+    }
+
+    const htmlContent = `
+        <div class="relative flex items-center justify-center ${sizeClass} rounded-full text-white font-black shadow-lg shadow-gray-500/50 ${colorClass} ring-4 ring-opacity-50 transform transition-transform hover:scale-110">
+            <span class="relative z-10">${count}</span>
+            
+            <div class="absolute inset-0 rounded-full animate-ping opacity-30 ${colorClass.split(' ')[0]}"></div>
+        </div>
+    `;
+
+    return L.divIcon({
+        html: htmlContent,
+        className: 'custom-cluster', 
+        iconSize: L.point(40, 40, true),
+        iconAnchor: [20, 20]
+    });
+};
+
 function MapClickHandler({ setActiveRadius }) {
     useMapEvents({
         click: () => {
@@ -203,6 +233,8 @@ export default function MapComponent({ schools, onSelectSchool, targetSchool }){
                 
                 <MarkerClusterGroup
                     chunkedLoading={true}
+                    iconCreateFunction={createCustomClusterIcon}
+                    // maxClusterRadius={50}
                 >
                 {filteredSchools.map((school) => {
                     if (school.latitude && school.longitude) {
